@@ -11,6 +11,7 @@ export default function InputURL({ onShortenedURLReceived }) {
   const handleSubmit = async () => {
     try {
       if (!isValidUrl(url)) {
+        onShortenedURLReceived("");
         throw new Error("Invalid URL");
       } else {
         setError(""); // Clear any previous error message
@@ -28,7 +29,7 @@ export default function InputURL({ onShortenedURLReceived }) {
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
-
+      setError("")
       const data = await response.json();
       console.log("InputURL", data.shortenedUrl)
       onShortenedURLReceived(data.shortenedUrl); // Pass the shortened URL to the parent component

@@ -9,13 +9,14 @@ def shorten_url():
     data = request.json
     long_url = data.get("url")
     shortened_url = getshorturl()
-    # shortened_url = "https://example.com/shortened-url"
+    # while shortened url in DB: shortened_url = getshorturl()
     shortened_url = "https://"+get_current_host()+"/"+shortened_url
     return jsonify({"shortenedUrl": shortened_url})
 
-def getshorturl():        
+def getshorturl():
     chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    short_url = "".join(random.choice(chars) for _ in range(MAX_LEN))
+    length = random.choice(range(1,MAX_LEN+1))
+    short_url = "".join(random.choice(chars) for _ in range(length))
     return short_url
     
 def get_current_host():
