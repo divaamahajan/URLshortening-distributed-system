@@ -1,46 +1,72 @@
-# URL Shortening Distributed System
+# URLshortening-distributed-system
 
-## Introduction
-This project implements a URL shortening distributed system using FastAPI for the server-side application and a client-side application using JavaScript.
+## Overview
 
-## Connect to MongoDB Database
-1. Sign up for MongoDB Atlas at [cloud.mongodb.com](https://cloud.mongodb.com/).
-2. Create a free cluster, select your preferred cloud provider (e.g., AWS), choose a region, and set a username/password.
-3. Create a `.env` file in the root directory of the project with the following content:
+This project implements a URL shortening service using a distributed system architecture. It leverages FastAPI for the server-side implementation and provides a client-side application for interaction.
 
-    ```plaintext
-    MONGODB_USERNAME="your_username"
-    MONGODB_PASSWORD="your_password"
-    ```
+## Setup MongoDB Atlas Database
 
-4. Follow the instructions in the server's `configs.database` file [here](https://github.com/divaamahajan/URLshortening-distributed-system/blob/main/server/config/database.py) to connect to the MongoDB cluster.
+1. Set up a MongoDB Atlas account on [cloud.mongodb.com](https://cloud.mongodb.com/).
+2. Create a free cluster, select your preferred cloud provider (AWS, etc.), choose a region, and set a username/password.
+3. Create a `.env` file in the project root directory and add the following variables:
+   ```
+   MONGODB_USERNAME="your_username"
+   MONGODB_PASSWORD="your_password"
+   ```
+   Replace `your_username` and `your_password` with the credentials you created in the previous step.
 
-## Getting Started
-### Server Setup
-1. Install dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
-2. Run FastAPI server on port 8000:
-    ```bash
-    uvicorn main:app --reload
-    ```
+## Database Configuration
 
-### Client Setup
-1. Install dependencies:
-    ```bash
-    npm install
-    ```
-2. Run the client on port 3000:
-    ```bash
-    npm start
-    ```
+The database configuration is handled in the [configs.database](https://github.com/divaamahajan/URLshortening-distributed-system/blob/main/server/config/database.py) module. We connect to the MongoDB cluster using native drivers in Python.
 
-## Testing API Endpoints
-When the FastAPI server is running, interactive documentation for the API can be accessed at `http://localhost:8000/docs` in a web browser. This documentation provides details about the API endpoints, input parameters, and response formats. Users can explore the documentation, make test requests, and view responses in real-time, simplifying API development and usage.
+- We create a database within the cluster and define collections (similar to SQL tables) through our Python server.
+- The connection string obtained from MongoDB Atlas is used in the FastAPI application to connect to the cluster.
 
-## Contributors
-- [Your Name](https://github.com/your_username)
+## Schema and Models
 
-## License
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+- Schemas, located in the [schema directory](https://github.com/divaamahajan/URLshortening-distributed-system/tree/main/server/schema), define the structure of documents in the database. They specify fields, data types, and validation rules.
+- Models, located in the [models directory](https://github.com/divaamahajan/URLshortening-distributed-system/tree/main/server/models), represent and interact with data stored in MongoDB collections. They encapsulate CRUD operations and data validation logic.
+
+## Running the Server
+
+### Install Dependencies
+
+Run the following command to install the required Python dependencies:
+```
+pip install -r requirements.txt
+```
+
+### Start FastAPI Server
+
+Run the following command to start the FastAPI server on port 8000:
+```
+uvicorn main:app --reload
+```
+
+The `uvicorn` command is used to run the ASGI server. It automatically reloads the server when changes are detected in the source code.
+The main in above command is the [main-server](https://github.com/divaamahajan/URLshortening-distributed-system/blob/main/server/main.py) python file.
+
+## API Endpoints
+
+API endpoints are defined in the [`routes.route` module](https://github.com/divaamahajan/URLshortening-distributed-system/blob/main/server/routes/route.py). When the FastAPI application is running, it automatically generates interactive documentation for the API. This documentation can be accessed at [http://localhost:8000/docs](http://localhost:8000/docs) in your web browser. It provides details about the endpoints, input parameters, and response formats, allowing users to explore and test the API interactively.
+
+## Client Setup
+
+### Install Dependencies
+
+Run the following command to install the required Node.js dependencies for the client:
+```
+npm install
+```
+
+### Start Client
+
+Run the following command to start the client application on port 3000:
+```
+npm start
+```
+
+## Additional Notes
+
+- The main file used by `uvicorn` to run the server is `main.py`.
+- Ensure that the MongoDB Atlas cluster is properly configured and accessible before running the server.
