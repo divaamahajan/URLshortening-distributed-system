@@ -1,28 +1,46 @@
-# URLshortening-distributed-system
+# URL Shortening Distributed System
 
-## Start Server
-### install dependencies
-`pip install -r requirements.txt`
+## Introduction
+This project implements a URL shortening distributed system using FastAPI for the server-side application and a client-side application using JavaScript.
 
-### run Fast Api on port 8000
-`uvicorn main:app --reload`
+## Connect to MongoDB Database
+1. Sign up for MongoDB Atlas at [cloud.mongodb.com](https://cloud.mongodb.com/).
+2. Create a free cluster, select your preferred cloud provider (e.g., AWS), choose a region, and set a username/password.
+3. Create a `.env` file in the root directory of the project with the following content:
 
+    ```plaintext
+    MONGODB_USERNAME="your_username"
+    MONGODB_PASSWORD="your_password"
+    ```
 
-`uvicorn` is an ASGI (Asynchronous Server Gateway Interface) server, used primarily for running asynchronous web applications built using frameworks like FastAPI, Starlette, or Quart. The command `uvicorn main:app --reload` is used to start the uvicorn server with specific configuration options.
+4. Follow the instructions in the server's `configs.database` file [here](https://github.com/divaamahajan/URLshortening-distributed-system/blob/main/server/config/database.py) to connect to the MongoDB cluster.
 
-Here's a breakdown of the command:
+## Getting Started
+### Server Setup
+1. Install dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+2. Run FastAPI server on port 8000:
+    ```bash
+    uvicorn main:app --reload
+    ```
 
-- `uvicorn`: This is the command used to run the uvicorn server.
-- `main:app`: This specifies the location of the ASGI application to be run by uvicorn. In this case, it's referring to the ASGI application object named `app` defined in a python module named `main`. The format `module_name:object_name` is common in Python.
-- `--reload`: This is an optional flag that tells uvicorn to automatically reload the server when changes are detected in the source code.
+### Client Setup
+1. Install dependencies:
+    ```bash
+    npm install
+    ```
+2. Run the client on port 3000:
+    ```bash
+    npm start
+    ```
 
-### Test API endPoints
-When you run a FastAPI application, it automatically generates interactive documentation for your API. This documentation can be accessed at `http://localhost:8000/docs` in your web browser. It's created based on the structure of your code and includes details about your API endpoints, input parameters, and response formats. Users can explore the documentation, make test requests, and see responses in real-time. This feature simplifies API development and makes it easy for developers to understand and use your API.
+## Testing API Endpoints
+When the FastAPI server is running, interactive documentation for the API can be accessed at `http://localhost:8000/docs` in a web browser. This documentation provides details about the API endpoints, input parameters, and response formats. Users can explore the documentation, make test requests, and view responses in real-time, simplifying API development and usage.
 
-## Start Client
+## Contributors
+- [Your Name](https://github.com/your_username)
 
-### Install dependencies
-`npm install`
-
-### run clien on port 3000
-`npm start`
+## License
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
