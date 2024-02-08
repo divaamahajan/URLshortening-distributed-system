@@ -14,6 +14,7 @@ This project implements a URL shortening service using a distributed system arch
    MONGODB_PASSWORD="your_password"
    ```
    Replace `your_username` and `your_password` with the credentials you created in the previous step.
+- Ensure that the MongoDB Atlas cluster is properly configured and accessible before running the server.
 
 ## Database Configuration
 
@@ -43,8 +44,8 @@ Run the following command to start the FastAPI server on port 8000:
 uvicorn main:app --reload
 ```
 
-The `uvicorn` command is used to run the ASGI server. It automatically reloads the server when changes are detected in the source code.
-The main in above command is the [main-server](https://github.com/divaamahajan/URLshortening-distributed-system/blob/main/server/main.py) python file.
+- The `uvicorn` command is used to run the ASGI server. It automatically reloads the server when changes are detected in the source code.
+- The main file used by `uvicorn` to run the server is `main.py`. [main-server](https://github.com/divaamahajan/URLshortening-distributed-system/blob/main/server/main.py) python file.
 
 ## API Endpoints
 
@@ -66,7 +67,3 @@ Run the following command to start the client application on port 3000:
 npm start
 ```
 
-## Additional Notes
-
-- The main file used by `uvicorn` to run the server is `main.py`.
-- Ensure that the MongoDB Atlas cluster is properly configured and accessible before running the server.
