@@ -82,23 +82,41 @@ Here's how you can create Dockerfiles for both the client and server components 
 
 ### Building and Running Docker Images
 
-1.  **Build Docker Images:**
+#### Option 1: Manual Docker Build and Run
 
-    - Navigate to the directory containing the Dockerfile for each component.
-    - Run the following command to build the Docker image:
-      ```bash
-      docker run -p 8000:8000 --name server-container server-image # For server
-      docker run -p 3000:3000 --name client-container client-image # For client
+1. **Build Docker Images:**
+   - Navigate to the directory containing the Dockerfile for each  [server](server) and [client](client) component.
+   - Run the following command to build the Docker image:
 
-           ```
+     ```bash
+     # For server
+     docker build -t server-image .
+     
+     # For client
+     docker build -t client-image .
+     ```
 
-2.  **Run Docker Containers:**
-    - After building the images, you can run containers from the images using:
-      ```bash
-      docker run -p 8000:8000 server-image   # For server
-      docker run -p 3000:3000 client-image   # For client
-      ```
-    - This command maps port 8000 of the host to port 8000 of the container for the server, and port 3000 of the host to port 3000 of the container for the client.
+2. **Run Docker Containers:**
+
+   - After building the images, you can run containers from the images using:
+
+     ```bash
+     # For server
+     docker run -p 8000:8000 --name server-container server-image
+     
+     # For client
+     docker run -p 3000:3000 --name client-container client-image
+     ```
+
+   - This command maps port 8000 of the host to port 8000 of the container for the server, and port 3000 of the host to port 3000 of the container for the client.
+
+#### Option 2: Docker Compose
+
+Execute the following command to run both server and client containers using `docker-compose`:
+
+```bash
+docker-compose up
+```
 
 With these Dockerfiles, you can containerize both the server (FastAPI backend) and the client (React frontend) components of your URL shortening distributed system.
 
