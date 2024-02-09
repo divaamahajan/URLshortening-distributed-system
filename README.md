@@ -85,30 +85,51 @@ Here's how you can create Dockerfiles for both the client and server components 
 #### Option 1: Manual Docker Build and Run
 
 1. **Build Docker Images:**
-   - Navigate to the directory containing the Dockerfile for each  [server](server) and [client](client) component.
+
+   - Navigate to the directory containing the Dockerfile for each [server](server) and [client](client) component.
    - Run the following command to build the Docker image:
 
      ```bash
      # For server
      docker build -t server-image .
-     
+
      # For client
      docker build -t client-image .
      ```
 
 2. **Run Docker Containers:**
+   After building the Docker images, you can proceed to run containers from these images using the following options:
 
-   - After building the images, you can run containers from the images using:
+#### Option 1: Manual Docker Build and Run
 
-     ```bash
-     # For server
-     docker run -p 8000:8000 --name server-container server-image
-     
-     # For client
-     docker run -p 3000:3000 --name client-container client-image
-     ```
+##### If server is hosted locally:
 
-   - This command maps port 8000 of the host to port 8000 of the container for the server, and port 3000 of the host to port 3000 of the container for the client.
+```bash
+docker run -d -p 8000:8000 --name servercontainer --env-file ./server/.env server-image --reload [externalDNS={your-external-server}]
+
+```
+
+##### If server is hosted externally (ex: EC2 instances):
+
+```bash
+docker run -d -p 8000:8000 --name servercontainer --env-file ./server/.env server-image --reload [externalDNS={your-external-server}]
+```
+
+- Note: The `externalDNS` argument is optional. Include it only if your service is hosted externally. For local runs, you can omit it.
+
+Example:
+
+```bash
+docker run -d -p 8000:8000 --name servercontainer --env-file ./server/.env server-image --reload externalDNS=aws.com/12345679
+```
+
+##### To run the client:
+
+```bash
+docker run -p 3000:3000 --name client-container client-image
+```
+
+- This command maps port 8000 of the host to port 8000 of the container for the server and port 3000 of the host to port 3000 of the container for the client.
 
 #### Option 2: Docker Compose
 
@@ -118,10 +139,15 @@ Execute the following command to run both server and client containers using `do
 docker-compose up
 ```
 
-With these Dockerfiles, you can containerize both the server (FastAPI backend) and the client (React frontend) components of your URL shortening distributed system.
+- Note: The `externalDNS` argument is optional in the [`docker-compose.yaml`](docker-compose.yaml) file. Uncomment and update the `command` line if necessary.
+
+```yaml
+command: ["--reload", "externalDNS={your-external-dns}"]
+```
+
+These Dockerfiles allow you to containerize both the server (FastAPI backend) and the client (React frontend) components of your URL shortening distributed system.
 
 ## Refrences
 
 1. [Unlocking the Power of NoSQL: FastAPI with MongoDB](https://www.youtube.com/watch?v=QkGqjPFIGCA) by [Eric Roby](https://www.youtube.com/@codingwithroby)
 2. [Dockerize FastAPI project like a pro - Step-by-step Tutorial](https://www.youtube.com/watch?v=CzAyaSolZjY&t=277s) by [Stackless Tech](https://www.youtube.com/@stacklesstech)
-3.

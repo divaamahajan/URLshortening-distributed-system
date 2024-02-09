@@ -9,9 +9,6 @@ load_dotenv()
 # Access the MongoDB URI using the environment variable
 uname = os.getenv("MONGODB_USERNAME")
 pwd = os.getenv("MONGODB_PASSWORD")
-# print("env", env)
-# uname = env["MONGODB_USERNAME"]
-# pwd = env["MONGODB_PASSWORD"]
 
 print("uname",uname, "pwd", pwd)
 

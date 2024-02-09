@@ -4,11 +4,26 @@ from config.database import collection_name
 from models.models import UrlMappingModel
 from schema.schema import UrlMappingSchema
 import random
-# from bson import ObjectId
+import sys
 
 router = APIRouter()
 MAX_LEN = 7
+
+# Set default DNS value
+dns = "localhost"
+if len(sys.argv)>1:
+    # Parse the command-line argument
+    arg = sys.argv[1]
+    if '=' in arg: 
+        key, value = arg.split('=')
+        if key == "externalDNS" and value:
+            dns = value
+
 db = UrlMappingModel(collection_name)
+
+@router.get("/")
+async def ping():
+    return {"ping": "pong"}
 
 @router.post("/longurl")
 # async def shorten_url(request: Request, data: UrlMappingSchema):  
@@ -26,7 +41,7 @@ async def shorten_url(request: Request):
         print("new short= ", short_url)
         db.insert_url_mapping(short_url, long_url)
 
-    short_url = "http://"+get_current_host(request)+"/"+short_url
+    short_url = f"http://{dns}:{str(request.url.port)}/{short_url}"
     return {"shortenedUrl": short_url}
 
 
@@ -36,13 +51,6 @@ def create_short_url():
     short_url = "".join(random.choice(chars) for _ in range(length))
     return short_url
     
-def get_current_host(request: Request) -> str:
-    try:
-        return request.url.hostname + ":" + str(request.url.port)
-    except Exception as e:
-        print("Error:", e)
-        return ""
-
 @router.get("/{short_url}")
 async def redirect_to_long_url(short_url: str):
     long_url = db.get_long_url(short_url)

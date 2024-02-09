@@ -5,17 +5,19 @@ version: "3.8"
 services:
   # Server service
   server:
-    container_name: server-container
+    container_name: servercontainer
     build:
       context: ./server # Path to the directory containing the Dockerfile
       dockerfile: Dockerfile # Name of the Dockerfile
     ports:
       - "8000:8000" # Mapping port 8000 of the host to port 8000 of the container
     env_file:
-      - ./server/.env
+      - ./server/.env # Map container port to host port
+    # command: ["--reload", "externalDNS={your-external-dns}"]
+
   # Client service
   client:
-    container_name: client-container
+    container_name: clientcontainer
     build:
       context: ./client # Path to the directory containing the Dockerfile
       dockerfile: Dockerfile # Name of the Dockerfile
