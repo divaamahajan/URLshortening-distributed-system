@@ -1,5 +1,8 @@
 # Use an official Node.js runtime as a parent image
-FROM node:14-alpine
+FROM node:latest
+
+# Install any necessary dependencies
+RUN apt-get update && apt-get install -y openssl
 
 # Set the working directory in the container
 WORKDIR /app

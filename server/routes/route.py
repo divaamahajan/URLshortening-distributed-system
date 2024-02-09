@@ -46,6 +46,7 @@ def get_current_host(request: Request) -> str:
 @router.get("/{short_url}")
 async def redirect_to_long_url(short_url: str):
     long_url = db.get_long_url(short_url)
+    print("for short_url", short_url, "Redirect to long url", long_url)
     if long_url:
         return RedirectResponse(url=long_url, status_code=307)
     else:

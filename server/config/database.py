@@ -1,14 +1,20 @@
 #  Below code is available in Mongo-Connect
 from pymongo.mongo_client import MongoClient
 import os
+# from os import environ as env
 from dotenv import load_dotenv
-
 # Load environment variables from .env file
 load_dotenv()
 
 # Access the MongoDB URI using the environment variable
 uname = os.getenv("MONGODB_USERNAME")
 pwd = os.getenv("MONGODB_PASSWORD")
+# print("env", env)
+# uname = env["MONGODB_USERNAME"]
+# pwd = env["MONGODB_PASSWORD"]
+
+print("uname",uname, "pwd", pwd)
+
 uri = f"mongodb+srv://{uname}:{pwd}@cluster0.5cm4d9a.mongodb.net/?retryWrites=true&w=majority"
 
 # Create a new client to establish a connection to the MongoDB server

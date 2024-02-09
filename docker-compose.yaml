@@ -1,37 +1,25 @@
 # Docker Compose file for the URLshortening-distributed-system
 
-version: '3.8'
+version: "3.8"
 
 services:
-
   # Server service
   server:
+    container_name: server-container
     build:
-      context: ./server          # Path to the directory containing the Dockerfile
-      dockerfile: Dockerfile     # Name of the Dockerfile
+      context: ./server # Path to the directory containing the Dockerfile
+      dockerfile: Dockerfile # Name of the Dockerfile
     ports:
-      - "8000:8000"              # Mapping port 8000 of the host to port 8000 of the container
-    environment:
-      - MONGODB_USERNAME=${MONGODB_USERNAME}    # MongoDB username
-      - MONGODB_PASSWORD=${MONGODB_PASSWORD}    # MongoDB password
-    depends_on:
-      - mongodb                  # Ensure MongoDB service is started before the server
-
+      - "8000:8000" # Mapping port 8000 of the host to port 8000 of the container
+    env_file:
+      - ./server/.env
   # Client service
   client:
+    container_name: client-container
     build:
-      context: ./client          # Path to the directory containing the Dockerfile
-      dockerfile: Dockerfile     # Name of the Dockerfile
+      context: ./client # Path to the directory containing the Dockerfile
+      dockerfile: Dockerfile # Name of the Dockerfile
     ports:
-      - "3000:3000"              # Mapping port 3000 of the host to port 3000 of the container
+      - "3000:3000" # Mapping port 3000 of the host to port 3000 of the container
     depends_on:
-      - server                   # Ensure server service is started before the client
-
-  # MongoDB service
-  mongodb:
-    image: mongo:latest          # Use the latest MongoDB image from Docker Hub
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USERNAME}    # MongoDB username
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}    # MongoDB password
-    ports:
-      - "27017:27017"            # Mapping port 27017 of the host to port 27017 of the container
+      - server # Ensure server service is started before the client
