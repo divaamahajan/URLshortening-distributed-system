@@ -14,6 +14,7 @@ This project implements a URL shortening service using a distributed system arch
    MONGODB_PASSWORD="your_password"
    ```
    Replace `your_username` and `your_password` with the credentials you created in the previous step.
+
 - Ensure that the MongoDB Atlas cluster is properly configured and accessible before running the server.
 
 ## Database Configuration
@@ -33,6 +34,7 @@ The database configuration is handled in the [configs.database](https://github.c
 ### Install Dependencies
 
 Run the following command to install the required Python dependencies:
+
 ```
 pip install -r requirements.txt
 ```
@@ -40,6 +42,7 @@ pip install -r requirements.txt
 ### Start FastAPI Server
 
 Run the following command to start the FastAPI server on port 8000:
+
 ```
 uvicorn main:app --reload
 ```
@@ -56,6 +59,7 @@ API endpoints are defined in the [`routes.route` module](https://github.com/diva
 ### Install Dependencies
 
 Run the following command to install the required Node.js dependencies for the client:
+
 ```
 npm install
 ```
@@ -63,13 +67,40 @@ npm install
 ### Start Client
 
 Run the following command to start the client application on port 3000:
+
 ```
 npm start
 ```
 
+## Dockerising
+Here's how you can create Dockerfiles for both the client and server components of your URL shortening distributed system:
+
+1. Dockerfile for Server (FastAPI Backend)
+
+2. Dockerfile for Client (React Frontend)
+
+### Building and Running Docker Images
+
+1. **Build Docker Images:**
+   - Navigate to the directory containing the Dockerfile for each component.
+   - Run the following command to build the Docker image:
+     ```bash
+     docker build -t server-image .   # For server
+     docker build -t client-image .   # For client
+     ```
+
+2. **Run Docker Containers:**
+   - After building the images, you can run containers from the images using:
+     ```bash
+     docker run -p 8000:8000 server-image   # For server
+     docker run -p 3000:3000 client-image   # For client
+     ```
+   - This command maps port 8000 of the host to port 8000 of the container for the server, and port 3000 of the host to port 3000 of the container for the client.
+
+With these Dockerfiles, you can containerize both the server (FastAPI backend) and the client (React frontend) components of your URL shortening distributed system.
 
 ## Refrences
+
 1. [Unlocking the Power of NoSQL: FastAPI with MongoDB](https://www.youtube.com/watch?v=QkGqjPFIGCA) by [Eric Roby](https://www.youtube.com/@codingwithroby)
 2. [Dockerize FastAPI project like a pro - Step-by-step Tutorial](https://www.youtube.com/watch?v=CzAyaSolZjY&t=277s) by [Stackless Tech](https://www.youtube.com/@stacklesstech)
-3. 
-
+3.
