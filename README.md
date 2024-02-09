@@ -19,7 +19,13 @@ This project implements a URL shortening service using a distributed system arch
 
 ## Database Configuration
 
-The database configuration is handled in the [configs.database](server/config/database.py) module. We connect to the MongoDB cluster using native drivers in Python.
+The database configuration is handled in the [configs.database](server/config/database.py) module. 
+To get a MongoDB Atlas connection string, you can:
+1. Go to the MongoDB Atlas web interface
+2. Find the cluster to connect to
+3. Click the Connect button next to the cluster name
+4. Select the method you're using to connect to MongoDB
+5. Copy the connection string and update `uri` in the [database file](server/config/database.py)
 
 - We create a database within the cluster and define collections (similar to SQL tables) through our Python server.
 - The connection string obtained from MongoDB Atlas is used in the FastAPI application to connect to the cluster.
