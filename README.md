@@ -35,7 +35,8 @@ To get a MongoDB Atlas connection string, you can:
 - Schemas, located in the [schema directory](https://github.com/divaamahajan/URLshortening-distributed-system/tree/main/server/schema), define the structure of documents in the database. They specify fields, data types, and validation rules.
 - Models, located in the [models directory](https://github.com/divaamahajan/URLshortening-distributed-system/tree/main/server/models), represent and interact with data stored in MongoDB collections. They encapsulate CRUD operations and data validation logic.
 
-## Running the Server
+## If you want to test application loaclly without docker containers
+### 1. Run the Server
 
 ### Install Dependencies
 
@@ -53,8 +54,31 @@ Run the following command to start the FastAPI server on port 8000:
 uvicorn main:app --reload
 ```
 
+- The server is now running on [http://localhost:8000](http://localhost:8000)
 - The `uvicorn` command is used to run the ASGI server. It automatically reloads the server when changes are detected in the source code.
 - The main file used by `uvicorn` to run the server is `main.py`. [main-server](server/main.py) python file.
+
+
+### 2. Client Setup (locally without docker)
+
+### Install Dependencies
+
+Run the following command to install the required Node.js dependencies for the client:
+
+```
+npm install
+```
+
+### Start Client
+
+Run the following command to start the client application on port 3000:
+
+```
+npm start
+```
+
+- The client is now running on [http://localhost:3000](http://localhost:3000) and you can start interacting with you application through this link
+
 
 ## API Endpoints
 
@@ -88,23 +112,7 @@ This FastAPI application provides the following API endpoints:
    - **Response**: Redirects the client to the original long URL.
 
 To use these endpoints, send requests to the appropriate URL with the specified method and payload, and the server will respond accordingly.
-## Client Setup
 
-### Install Dependencies
-
-Run the following command to install the required Node.js dependencies for the client:
-
-```
-npm install
-```
-
-### Start Client
-
-Run the following command to start the client application on port 3000:
-
-```
-npm start
-```
 
 ## Dockerising
 
@@ -116,7 +124,21 @@ Here's how you can create Dockerfiles for both the client and server components 
 
 ### Building and Running Docker Images
 
-#### Option 1: Manual Docker Build and Run
+#### Option 1: Docker Compose
+
+Execute the following command to run both server and client containers using `docker-compose`:
+
+```bash
+docker-compose up
+```
+
+- **Note** *The `externalDNS` argument is optional in the [`docker-compose.yaml`](docker-compose.yaml) file. Uncomment and update the `command` line if necessary*
+
+```yaml
+command: ["--reload", "externalDNS={your-external-dns}"]
+```
+
+#### Option 2: Manual Docker Build and Run
 
 1. **Build Docker Images:**
 
@@ -130,39 +152,24 @@ Here's how you can create Dockerfiles for both the client and server components 
      # For client
      docker build -t client-image .
      ```
-
 2. **Run Docker Containers:**
    After building the Docker images, you can proceed to run containers from these images using the following options:
-#### Option 1: Docker Compose
 
-Execute the following command to run both server and client containers using `docker-compose`:
-
-```bash
-docker-compose up
-```
-
-- Note: The `externalDNS` argument is optional in the [`docker-compose.yaml`](docker-compose.yaml) file. Uncomment and update the `command` line if necessary.
-
-```yaml
-command: ["--reload", "externalDNS={your-external-dns}"]
-```
-
-#### Option 2: Manual Docker Build and Run
-
-##### If server is hosted locally:
+##### 1. To run the server 
+**a. If server is hosted locally:**
 
 ```bash
 docker run -d -p 8000:8000 --name servercontainer --env-file ./server/.env server-image --reload [externalDNS={your-external-server}]
 
 ```
 
-##### If server is hosted externally (ex: EC2 instances):
+**b. If server is hosted externally (ex: EC2 instances):**
 
 ```bash
 docker run -d -p 8000:8000 --name servercontainer --env-file ./server/.env server-image --reload [externalDNS={your-external-server}]
 ```
 
-- Note: The `externalDNS` argument is optional. Include it only if your service is hosted externally. For local runs, you can omit it.
+- **Note** *The `externalDNS` argument is optional. Include it only if your service is hosted externally. For local runs, you can omit it.*
 
 Example:
 
@@ -170,7 +177,7 @@ Example:
 docker run -d -p 8000:8000 --name servercontainer --env-file ./server/.env server-image --reload externalDNS=aws.com/12345679
 ```
 
-##### To run the client:
+##### 2. To run the client:
 
 ```bash
 docker run -p 3000:3000 --name client-container client-image
