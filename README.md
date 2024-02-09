@@ -19,7 +19,7 @@ This project implements a URL shortening service using a distributed system arch
 
 ## Database Configuration
 
-The database configuration is handled in the [configs.database](https://github.com/divaamahajan/URLshortening-distributed-system/blob/main/server/config/database.py) module. We connect to the MongoDB cluster using native drivers in Python.
+The database configuration is handled in the [configs.database](server/config/database.py) module. We connect to the MongoDB cluster using native drivers in Python.
 
 - We create a database within the cluster and define collections (similar to SQL tables) through our Python server.
 - The connection string obtained from MongoDB Atlas is used in the FastAPI application to connect to the cluster.
@@ -48,11 +48,11 @@ uvicorn main:app --reload
 ```
 
 - The `uvicorn` command is used to run the ASGI server. It automatically reloads the server when changes are detected in the source code.
-- The main file used by `uvicorn` to run the server is `main.py`. [main-server](https://github.com/divaamahajan/URLshortening-distributed-system/blob/main/server/main.py) python file.
+- The main file used by `uvicorn` to run the server is `main.py`. [main-server](server/main.py) python file.
 
 ## API Endpoints
 
-API endpoints are defined in the [`routes.route` module](https://github.com/divaamahajan/URLshortening-distributed-system/blob/main/server/routes/route.py). When the FastAPI application is running, it automatically generates interactive documentation for the API. This documentation can be accessed at [http://localhost:8000/docs](http://localhost:8000/docs) in your web browser. It provides details about the endpoints, input parameters, and response formats, allowing users to explore and test the API interactively.
+API endpoints are defined in the [`routes.route` module](server/routes/route.py). When the FastAPI application is running, it automatically generates interactive documentation for the API. This documentation can be accessed at [http://localhost:8000/docs](http://localhost:8000/docs) in your web browser. It provides details about the endpoints, input parameters, and response formats, allowing users to explore and test the API interactively.
 
 ## Client Setup
 
@@ -76,7 +76,7 @@ npm start
 
 Here's how you can create Dockerfiles for both the client and server components of your URL shortening distributed system:
 
-1. [Dockerfile for Server (FastAPI Backend)](https://github.com/divaamahajan/URLshortening-distributed-system/blob/main/client/Dockerfile)
+1. [Dockerfile for Server (FastAPI Backend)](client/Dockerfile)
 
 2. [Dockerfile for Client (React Frontend)](server/Dockerfile)
 
