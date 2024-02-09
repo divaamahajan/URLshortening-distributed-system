@@ -139,37 +139,41 @@ command: ["--reload", "externalDNS={your-external-dns}"]
 ```
 
 #### Option 2: Manual Docker Build and Run
+##### Building Docker Images:
 
-1. **Build Docker Images:**
+1. Navigate to the directory containing the Dockerfile for each component:
+    - [server](server)
+    - [client](client)
 
-   - Navigate to the directory containing the Dockerfile for each [server](server) and [client](client) component.
-   - Run the following command to build the Docker image:
+2. Run the following commands to build the Docker images:
 
-     ```bash
-     # For server
-     docker build -t server-image .
+```bash
+# For server
+docker build -t server-image .
 
-     # For client
-     docker build -t client-image .
-     ```
-2. **Run Docker Containers:**
-   After building the Docker images, you can proceed to run containers from these images using the following options:
+# For client
+docker build -t client-image .
+```
 
-##### 1. To run the server 
-**a. If server is hosted locally:**
+##### Running Docker Containers:
+
+After building the Docker images, you can run containers from these images using the following options:
+
+###### 1. Running the Server:
+
+###### *a. If the server is hosted locally:*
 
 ```bash
 docker run -d -p 8000:8000 --name servercontainer --env-file ./server/.env server-image --reload [externalDNS={your-external-server}]
-
 ```
 
-**b. If server is hosted externally (ex: EC2 instances):**
+###### *b. If the server is hosted externally (e.g., EC2 instances):*
 
 ```bash
 docker run -d -p 8000:8000 --name servercontainer --env-file ./server/.env server-image --reload [externalDNS={your-external-server}]
 ```
 
-- **Note** *The `externalDNS` argument is optional. Include it only if your service is hosted externally. For local runs, you can omit it.*
+- **Note:** The `externalDNS` argument is optional. Include it only if your service is hosted externally. For local runs, you can omit it.
 
 Example:
 
@@ -177,16 +181,18 @@ Example:
 docker run -d -p 8000:8000 --name servercontainer --env-file ./server/.env server-image --reload externalDNS=aws.com/12345679
 ```
 
-##### 2. To run the client:
+###### 2. Running the Client:
 
 ```bash
 docker run -p 3000:3000 --name client-container client-image
 ```
 
-- This command maps port 8000 of the host to port 8000 of the container for the server and port 3000 of the host to port 3000 of the container for the client.
+- This command maps port 8000 of the host to port 8000 of the container for the server, and port 3000 of the host to port 3000 of the container for the client.
 
+---
 
-These Dockerfiles allow you to containerize both the server (FastAPI backend) and the client (React frontend) components of your URL shortening distributed system.
+These Dockerfiles enable you to containerize both the server (FastAPI backend) and the client (React frontend) components of your URL shortening distributed system.
+Now you can access the application on your `DNS` or `localhost` on port `3000` ex:- [http://localhost:3000/](http://localhost:3000/)
 
 ## Refrences
 
