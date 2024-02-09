@@ -73,15 +73,17 @@ npm start
 ```
 
 ## Dockerising
+
 Here's how you can create Dockerfiles for both the client and server components of your URL shortening distributed system:
 
-1. Dockerfile for Server (FastAPI Backend)
+1. [Dockerfile for Server (FastAPI Backend)](https://github.com/divaamahajan/URLshortening-distributed-system/blob/main/client/Dockerfile)
 
-2. Dockerfile for Client (React Frontend)
+2. [Dockerfile for Client (React Frontend)](server/Dockerfile)
 
 ### Building and Running Docker Images
 
 1. **Build Docker Images:**
+
    - Navigate to the directory containing the Dockerfile for each component.
    - Run the following command to build the Docker image:
      ```bash
