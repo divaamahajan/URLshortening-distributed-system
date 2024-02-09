@@ -164,22 +164,21 @@ After building the Docker images, you can run containers from these images using
 ###### *a. If the server is hosted locally:*
 
 ```bash
-docker run -d -p 8000:8000 --name servercontainer --env-file ./server/.env server-image --reload [externalDNS={your-external-server}]
+docker run -d -p 8000:8000 --name servercontainer --env-file ./server/.env server-image --reload
 ```
 
 ###### *b. If the server is hosted externally (e.g., EC2 instances):*
 
 ```bash
-docker run -d -p 8000:8000 --name servercontainer --env-file ./server/.env server-image --reload [externalDNS={your-external-server}]
+docker run -d -p 8000:8000 --name servercontainer --env-file ./server/.env server-image --reload externalDNS={your-external-server}
 ```
-
-- **Note:** The `externalDNS` argument is optional. Include it only if your service is hosted externally. For local runs, you can omit it.
-
 Example:
 
 ```bash
 docker run -d -p 8000:8000 --name servercontainer --env-file ./server/.env server-image --reload externalDNS=aws.com/12345679
 ```
+
+- **Note:** The `externalDNS` argument is optional. Include it only if your service is hosted externally. For local runs, you can omit it.
 
 ###### 2. Running the Client:
 
