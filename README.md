@@ -69,7 +69,7 @@ This FastAPI application provides the following API endpoints:
    - **Response**: 
      ```json
      {
-       "shortenedUrl": "http://<current_host>/<short_url>"
+       "shortenedUrl": "http://localhost:8000/<short_url>"
      }
      ```
    
@@ -127,8 +127,21 @@ Here's how you can create Dockerfiles for both the client and server components 
 
 2. **Run Docker Containers:**
    After building the Docker images, you can proceed to run containers from these images using the following options:
+#### Option 1: Docker Compose
 
-#### Option 1: Manual Docker Build and Run
+Execute the following command to run both server and client containers using `docker-compose`:
+
+```bash
+docker-compose up
+```
+
+- Note: The `externalDNS` argument is optional in the [`docker-compose.yaml`](docker-compose.yaml) file. Uncomment and update the `command` line if necessary.
+
+```yaml
+command: ["--reload", "externalDNS={your-external-dns}"]
+```
+
+#### Option 2: Manual Docker Build and Run
 
 ##### If server is hosted locally:
 
@@ -159,19 +172,6 @@ docker run -p 3000:3000 --name client-container client-image
 
 - This command maps port 8000 of the host to port 8000 of the container for the server and port 3000 of the host to port 3000 of the container for the client.
 
-#### Option 2: Docker Compose
-
-Execute the following command to run both server and client containers using `docker-compose`:
-
-```bash
-docker-compose up
-```
-
-- Note: The `externalDNS` argument is optional in the [`docker-compose.yaml`](docker-compose.yaml) file. Uncomment and update the `command` line if necessary.
-
-```yaml
-command: ["--reload", "externalDNS={your-external-dns}"]
-```
 
 These Dockerfiles allow you to containerize both the server (FastAPI backend) and the client (React frontend) components of your URL shortening distributed system.
 

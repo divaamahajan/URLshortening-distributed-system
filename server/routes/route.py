@@ -3,11 +3,10 @@ from fastapi.responses import RedirectResponse
 from config.database import collection_name
 from models.models import UrlMappingModel
 from schema.schema import UrlMappingSchema
-import random
+from utils.utils import create_short_url
 import sys
 
 router = APIRouter()
-MAX_LEN = 7
 
 # Set default DNS value
 dns = "localhost"
@@ -44,12 +43,6 @@ async def shorten_url(request: Request):
     short_url = f"http://{dns}:{str(request.url.port)}/{short_url}"
     return {"shortenedUrl": short_url}
 
-
-def create_short_url():
-    chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    length = random.choice(range(1,MAX_LEN+1))
-    short_url = "".join(random.choice(chars) for _ in range(length))
-    return short_url
     
 @router.get("/{short_url}")
 async def redirect_to_long_url(short_url: str):
