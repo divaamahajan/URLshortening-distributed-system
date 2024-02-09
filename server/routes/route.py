@@ -15,7 +15,7 @@ db = UrlMappingModel(collection_name)
 async def shorten_url(request: Request):  
     data = await request.json()
     long_url = data.get("long_url")
-    print("data", data, "long_url", long_url)
+    print("long_url", long_url)
     # long_url = data.long_url  # Access the long_url attribute of the UrlMappingSchema object
     short_url = db.get_short_url(long_url)
     if not short_url: 
@@ -23,7 +23,7 @@ async def shorten_url(request: Request):
         # if the short URL already in DB, keep creating new ones
         while db.get_long_url(short_url):
             short_url = create_short_url()
-        print("new short =", short_url)
+        print("new short= ", short_url)
         db.insert_url_mapping(short_url, long_url)
 
     short_url = "http://"+get_current_host(request)+"/"+short_url

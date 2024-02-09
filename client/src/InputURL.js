@@ -38,6 +38,7 @@ export default function InputURL({ onShortenedURLReceived }) {
       console.log("InputURL", data.shortenedUrl);
       onShortenedURLReceived(data.shortenedUrl); // Pass the shortened URL to the parent component
     } catch (err) {
+      onShortenedURLReceived("");
       setError(err.message);
     }
   };
