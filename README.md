@@ -1,8 +1,7 @@
 # URLshortening-distributed-system
 
 ## Overview
-
-This project implements a URL shortening service using a distributed system architecture. It leverages FastAPI for the server-side implementation and provides a client-side application for interaction.
+This project implements a scalable URL shortening service utilizing a distributed system architecture. It utilizes FastAPI for the server-side implementation and provides a React-based client-side application for seamless user interaction. The project's database is hosted on MongoDB, ensuring efficient data management and retrieval. Furthermore, the entire system is containerized using Docker, facilitating easy deployment and maintenance across various environments.
 
 ## Setup MongoDB Atlas Database
 
