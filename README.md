@@ -194,5 +194,6 @@ Now you can access the application on your `DNS` or `localhost` on port `3000` e
 
 ## Refrences
 
-1. [Unlocking the Power of NoSQL: FastAPI with MongoDB](https://www.youtube.com/watch?v=QkGqjPFIGCA) by [Eric Roby](https://www.youtube.com/@codingwithroby)
-2. [Dockerize FastAPI project like a pro - Step-by-step Tutorial](https://www.youtube.com/watch?v=CzAyaSolZjY&t=277s) by [Stackless Tech](https://www.youtube.com/@stacklesstech)
+1.[How to Create a Flask + React Project | Python Backend + React Frontend](https://youtu.be/7LNl2JlZKHA?si=aSMnZdAX7WARyZD3) by [Arpan Neupane](https://youtube.com/@ArpanNeupaneProductions?si=eBabEizliU63fXDV)
+2. [Unlocking the Power of NoSQL: FastAPI with MongoDB](https://www.youtube.com/watch?v=QkGqjPFIGCA) by [Eric Roby](https://www.youtube.com/@codingwithroby)
+3. [Dockerize FastAPI project like a pro - Step-by-step Tutorial](https://www.youtube.com/watch?v=CzAyaSolZjY&t=277s) by [Stackless Tech](https://www.youtube.com/@stacklesstech)
