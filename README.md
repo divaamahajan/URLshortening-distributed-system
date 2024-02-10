@@ -160,13 +160,13 @@ After building the Docker images, you can run containers from these images using
 
 ###### 1. Running the Server:
 
-###### *a. If the server is hosted locally:*
+***a. If the server is hosted locally:***
 
 ```bash
 docker run -d -p 8000:8000 --name servercontainer --env-file ./server/.env server-image --reload
 ```
 
-###### *b. If the server is hosted externally (e.g., EC2 instances):*
+***b. If the server is hosted externally (e.g., EC2 instances):***
 
 ```bash
 docker run -d -p 8000:8000 --name servercontainer --env-file ./server/.env server-image --reload externalDNS={your-external-server}
@@ -194,7 +194,7 @@ Now you can access the application on your `DNS` or `localhost` on port `3000` e
 
 ## Refrences
 
-1.[How to Create a Flask + React Project | Python Backend + React Frontend](https://youtu.be/7LNl2JlZKHA?si=aSMnZdAX7WARyZD3) by [Arpan Neupane](https://youtube.com/@ArpanNeupaneProductions?si=eBabEizliU63fXDV)
+1. [How to Create a Flask + React Project | Python Backend + React Frontend](https://youtu.be/7LNl2JlZKHA?si=aSMnZdAX7WARyZD3) by [Arpan Neupane](https://youtube.com/@ArpanNeupaneProductions?si=eBabEizliU63fXDV)
 
 2. [Unlocking the Power of NoSQL: FastAPI with MongoDB](https://www.youtube.com/watch?v=QkGqjPFIGCA) by [Eric Roby](https://www.youtube.com/@codingwithroby)
    
