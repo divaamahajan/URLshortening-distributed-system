@@ -34,57 +34,6 @@ To get a MongoDB Atlas connection string, you can:
 - Schemas, located in the [schema directory](https://github.com/divaamahajan/URLshortening-distributed-system/tree/main/server/schema), define the structure of documents in the database. They specify fields, data types, and validation rules.
 - Models, located in the [models directory](https://github.com/divaamahajan/URLshortening-distributed-system/tree/main/server/models), represent and interact with data stored in MongoDB collections. They encapsulate CRUD operations and data validation logic.
 
-## If you want to test application locally without docker containers
-### 1. Run the Server (locally without docker)
-
-### Install Dependencies
-
-Run the following command to install the required Python dependencies:
-
-```
-pip install -r requirements.txt
-```
-
-### Start FastAPI Server
-
-Run the following command to start the FastAPI server on port 8000:
-
-```
-uvicorn main:app --reload
-```
-
-- The server is now running on [http://localhost:8000](http://localhost:8000)
-- The `uvicorn` command is used to run the ASGI server. It automatically reloads the server when changes are detected in the source code.
-- The main file used by `uvicorn` to run the server is `main.py`. [main-server](server/main.py) python file.
-
-
-### 2. Client Setup (locally without docker)
-
-### Install Dependencies
-
-Run the following command to install the required Node.js dependencies for the client:
-
-```
-npm install
-```
-
-### Start Client
-1.  update proxy key in [package.json](client\package.json) file to connect to server (backend) API running at http://localhost:8000
-  
-```bash
-   "proxy": "http://localhost:8000",
-```
-
-
-2. Run the following command to start the client application on port 3000:
-
-```
-npm start
-```
-
-- The client is now running on [http://localhost:3000](http://localhost:3000) and you can start interacting with you application through this link
-
-
 ## API Endpoints
 
 API endpoints are defined in the [`routes.route` module](server/routes/route.py). When the FastAPI application is running, it automatically generates interactive documentation for the API. This documentation can be accessed at [http://localhost:8000/docs](http://localhost:8000/docs) in your web browser. It provides details about the endpoints, input parameters, and response formats, allowing users to explore and test the API interactively.
@@ -119,6 +68,77 @@ This FastAPI application provides the following API endpoints:
 To use these endpoints, send requests to the appropriate URL with the specified method and payload, and the server will respond accordingly.
 
 
+## If you want to test application locally without docker containers
+### 1. Run the Server (locally without docker)
+
+Navigate to the [server directory](server)
+**a. Create virtual environment**
+   - Run the following command to create a virtual environment named `venv`:
+   ```
+   python3 -m venv venv
+   ```
+- Once the virtual environment is created, you need to activate it. 
+
+   - **On macOS and Linux**:
+     ```
+     source venv/bin/activate
+     ```
+
+   - **On Windows**:
+     ```
+     venv\Scripts\activate
+     ```
+-  After activation, you should see `(venv)` at the beginning of your command prompt, indicating that the virtual environment is active.
+-  *When you're done working in the virtual environment, you can deactivate it by running the `deactivate` command in the terminal.*
+**b. Install Dependencies**
+
+Run the following command to install the required Python dependencies:
+
+```
+pip install -r requirements.txt
+```
+
+**c. Start FastAPI Server**
+
+Run the following command to start the FastAPI server on port 8000:
+
+```
+uvicorn main:app --reload
+```
+
+- The server is now running on [http://localhost:8000](http://localhost:8000)
+- The `uvicorn` command is used to run the ASGI server. It automatically reloads the server when changes are detected in the source code.
+- The main file used by `uvicorn` to run the server is `main.py`. [main-server](server/main.py) python file.
+
+
+### 2. Client Setup (locally without docker)
+
+Navigate to the [client directory](client)
+
+**a. Install Dependencies**
+
+Run the following command to install the required Node.js dependencies for the client:
+
+```
+npm install
+```
+
+**b. Start Client**
+1.  update proxy key in [package.json](client\package.json) file to connect to server (backend) API running at http://localhost:8000
+  
+```bash
+   "proxy": "http://localhost:8000",
+```
+
+
+2. Run the following command to start the client application on port 3000:
+
+```
+npm start
+```
+
+- The client is now running on [http://localhost:3000](http://localhost:3000) and you can start interacting with you application through this link
+
 ## Dockerising
 
 Here's how you can create Dockerfiles for both the client and server components of your URL shortening distributed system:
@@ -146,11 +166,6 @@ This container name is given in  [`docker-compose.yaml`](docker-compose.yaml) fi
 docker-compose up
 ```
 
-- **Note** *The `externalDNS` argument is optional in the [`docker-compose.yaml`](docker-compose.yaml) file. Uncomment and update the `command` line if necessary*
-
-```yaml
-command: ["--reload", "externalDNS={your-external-dns}"]
-```
 
 #### Option 2: Manual Docker Build and Run
 ##### Building Docker Images:
@@ -176,30 +191,17 @@ docker build -t server-image .
 docker build -t client-image .
 ```
 
-##### Running Docker Containers:
+##### Running Docker Containers locally:
 
 After building the Docker images, you can run containers from these images using the following options:
 
 ###### 1. Running the Server:
-
-***a. If the server is hosted locally:***
+ Run the following command to start the server application on port 8000:
 
 ```bash
 docker run -d -p 8000:8000 --name servercontainer --env-file ./server/.env server-image --reload
 ```
 
-***b. If the server is hosted externally (e.g., EC2 instances):***
-
-```bash
-docker run -d -p 8000:8000 --name servercontainer --env-file ./server/.env server-image --reload externalDNS={your-external-server}
-```
-Example:
-
-```bash
-docker run -d -p 8000:8000 --name servercontainer --env-file ./server/.env server-image --reload externalDNS=aws.com/12345679
-```
-
-- **Note:** The `externalDNS` argument is optional. Include it only if your service is hosted externally. For local runs, you can omit it.
 
 ###### 2. Running the Client:
  Run the following command to start the client application on port 3000:
@@ -251,6 +253,7 @@ urlserver-service-urlserver-helm   ClusterIP   10.105.226.2   <none>        8000
 ```
 
 You received `urlserver-service-urlserver-helm` as your service name which can be used by client to connect with it.
+* to stop later you can use `helm uninstall urlserver-service -n urlserver-namespace`
 
 **b. for client**
 1. Navigate to client's [helm directory](client\helm\urlclient-helm)
@@ -259,7 +262,10 @@ You received `urlserver-service-urlserver-helm` as your service name which can b
 helm upgrade --install urlclient-service -n urlclient-namespace --create-namespace .
 ```
 
+## Notes:
+- If you hosted your server on external DNS say EC2 machines, you can update the `DNS` in [utils file](server\utils\utils.py)
 
+  
 ## Refrences
 
 1. [How to Create a Flask + React Project | Python Backend + React Frontend](https://youtu.be/7LNl2JlZKHA?si=aSMnZdAX7WARyZD3) by [Arpan Neupane](https://youtube.com/@ArpanNeupaneProductions?si=eBabEizliU63fXDV)
