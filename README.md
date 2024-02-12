@@ -155,18 +155,18 @@ command: ["--reload", "externalDNS={your-external-dns}"]
 #### Option 2: Manual Docker Build and Run
 ##### Building Docker Images:
 
-1.  Update client's proxy key in [package.json](client\package.json) file to connect to server (backend) container's API   
+**Step 1.**  Update client's proxy key in [package.json](client\package.json) file to connect to server (backend) container's API   
 ```bash
    "proxy": "http://servercontainer:8000",
 ```
 This container name is given while [running the server](#1.-running-the-server) `servercontainer`. This naming convention can be helpful for identifying and managing containers when working with Docker.
 
 
-2. Navigate to the directory containing the Dockerfile for each component:
+**Step 2.** Navigate to the directory containing the Dockerfile for each component:
     - [server](server)
     - [client](client)
 
-3. Run the following commands to build the Docker images:
+**Step 3.** Run the following commands to build the Docker images:
 
 ```bash
 # For server
@@ -223,11 +223,11 @@ In short, a Helm chart can be compared to Docker Compose in the sense that both 
 
 
 ### 1. Building Docker Images:
-1.  Update client's proxy key in [package.json](client\package.json) file to connect to server (backend) container's API   
+**Step 1.**  Update client's proxy key in [package.json](client\package.json) file to connect to server (backend) container's API   
 ```bash
   "proxy": "http://urlserver-service-urlserver-helm.urlserver-namespace.svc.cluster.local:8000",
 ```
-This service name and namespace is created while [creating server's helm chart](#2.-create-helm-chart) `servercontainer`. This naming convention can be helpful for identifying and managing containers when working with Kubernetes.
+This service name and namespace is created while [creating server's helm chart](#2.-create-helm-chart). This naming convention can be helpful for identifying and managing containers when working with Kubernetes.
 
 Follow **step 2** and **Step 3** from [Building Docker Images](#building-docker-images) manually above
 
@@ -240,6 +240,17 @@ Follow **step 2** and **Step 3** from [Building Docker Images](#building-docker-
 ```bash
 helm upgrade --install urlserver-service -n urlserver-namespace --create-namespace .
 ```
+3. Check the created with below command
+```bash
+ kubectl get services -n urlserver-namespace
+```
+Example output:
+```bash
+NAME                               TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+urlserver-service-urlserver-helm   ClusterIP   10.105.226.2   <none>        8000/TCP   46m
+```
+
+You received `urlserver-service-urlserver-helm` as your service name which can be used by client to connect with it.
 
 **b. for client**
 1. Navigate to client's [helm directory](client\helm\urlclient-helm)
