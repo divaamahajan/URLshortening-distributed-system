@@ -34,8 +34,8 @@ To get a MongoDB Atlas connection string, you can:
 - Schemas, located in the [schema directory](https://github.com/divaamahajan/URLshortening-distributed-system/tree/main/server/schema), define the structure of documents in the database. They specify fields, data types, and validation rules.
 - Models, located in the [models directory](https://github.com/divaamahajan/URLshortening-distributed-system/tree/main/server/models), represent and interact with data stored in MongoDB collections. They encapsulate CRUD operations and data validation logic.
 
-## If you want to test application loaclly without docker containers
-### 1. Run the Server
+## If you want to test application locally without docker containers
+### 1. Run the Server (locally without docker)
 
 ### Install Dependencies
 
@@ -69,8 +69,14 @@ npm install
 ```
 
 ### Start Client
+1.  update proxy key in [package.json](client\package.json) file to connect to server (backend) API running at http://localhost:8000
+  
+```bash
+   "proxy": "http://localhost:8000",
+```
 
-Run the following command to start the client application on port 3000:
+
+2. Run the following command to start the client application on port 3000:
 
 ```
 npm start
@@ -123,9 +129,18 @@ Here's how you can create Dockerfiles for both the client and server components 
 
 ### Building and Running Docker Images
 
+- Docker Compose is primarily used for orchestrating containers and defining multi-container applications on a single host or in a local development environment.
+
 #### Option 1: Docker Compose
 
-Execute the following command to run both server and client containers using `docker-compose`:
+1.  Update client's proxy key in [package.json](client\package.json) file to connect to server (backend) container's API   
+```bash
+   "proxy": "http://servercontainer:8000",
+```
+This container name is given in  [`docker-compose.yaml`](docker-compose.yaml) file under `services` key, under the service named `server`, where we specified that the container created from this service should be named `servercontainer`. This naming convention can be helpful for identifying and managing containers when working with Docker.
+
+    
+2. Execute the following command to run both server and client containers using `docker-compose`:
 
 ```bash
 docker-compose up
@@ -140,11 +155,18 @@ command: ["--reload", "externalDNS={your-external-dns}"]
 #### Option 2: Manual Docker Build and Run
 ##### Building Docker Images:
 
-1. Navigate to the directory containing the Dockerfile for each component:
+1.  Update client's proxy key in [package.json](client\package.json) file to connect to server (backend) container's API   
+```bash
+   "proxy": "http://servercontainer:8000",
+```
+This container name is given while [running the server](#1.-running-the-server) `servercontainer`. This naming convention can be helpful for identifying and managing containers when working with Docker.
+
+
+2. Navigate to the directory containing the Dockerfile for each component:
     - [server](server)
     - [client](client)
 
-2. Run the following commands to build the Docker images:
+3. Run the following commands to build the Docker images:
 
 ```bash
 # For server
@@ -180,7 +202,7 @@ docker run -d -p 8000:8000 --name servercontainer --env-file ./server/.env serve
 - **Note:** The `externalDNS` argument is optional. Include it only if your service is hosted externally. For local runs, you can omit it.
 
 ###### 2. Running the Client:
-
+ Run the following command to start the client application on port 3000:
 ```bash
 docker run -p 3000:3000 --name client-container client-image
 ```
@@ -192,6 +214,41 @@ docker run -p 3000:3000 --name client-container client-image
 These Dockerfiles enable you to containerize both the server (FastAPI backend) and the client (React frontend) components of your URL shortening distributed system.
 Now you can access the application on your `DNS` or `localhost` on port `3000` ex:- [http://localhost:3000/](http://localhost:3000/)
 
+## Deploying the services in Kubernetes using Helm
+A Helm chart is a package format for Kubernetes applications. It contains all the Kubernetes manifest files (such as Deployments, Services, ConfigMaps, etc.) necessary to deploy and manage a specific application or service in a Kubernetes cluster. Helm charts are used to streamline the process of deploying complex applications in Kubernetes by encapsulating all the required configuration and dependencies into a single package.
+
+In short, a Helm chart can be compared to Docker Compose in the sense that both are tools used for deploying and managing applications, but they operate at different levels:
+-- Docker Compose orchestrates containers for multi-container applications locally. Helm charts deploy applications in Kubernetes, simplifying management in distributed environments. 
+-- Docker Compose handles application-level orchestration, while Helm charts manage deployment and dependencies at the Kubernetes infrastructure level.
+
+
+### 1. Building Docker Images:
+1.  Update client's proxy key in [package.json](client\package.json) file to connect to server (backend) container's API   
+```bash
+  "proxy": "http://urlserver-service-urlserver-helm.urlserver-namespace.svc.cluster.local:8000",
+```
+This service name and namespace is created while [creating server's helm chart](#2.-create-helm-chart) `servercontainer`. This naming convention can be helpful for identifying and managing containers when working with Kubernetes.
+
+Follow **step 2** and **Step 3** from [Building Docker Images](#building-docker-images) manually above
+
+
+### 2. Create helm chart 
+*Make sure kubernetes is enabled in your dockerhub settings*
+**a. for server**
+1. Navigate to server's [helm directory](server\helm\urlserver-helm)
+2. Execute below command to upgraded or install the Helm chart (which has service and deployments) named `urlserver-service` into the Kubernetes cluster, creating the namespace `urlserver-namespace` if it doesn't exist, using the Helm chart located in the current directory.
+```bash
+helm upgrade --install urlserver-service -n urlserver-namespace --create-namespace .
+```
+
+**b. for client**
+1. Navigate to client's [helm directory](client\helm\urlclient-helm)
+2. Execute below command to upgraded or install the Helm chart (which has service and deployments) named `urlclient-service` into the Kubernetes cluster, creating the namespace `urlclient-namespace` if it doesn't exist, using the Helm chart located in the current directory.
+```bash
+helm upgrade --install urlclient-service -n urlclient-namespace --create-namespace .
+```
+
+
 ## Refrences
 
 1. [How to Create a Flask + React Project | Python Backend + React Frontend](https://youtu.be/7LNl2JlZKHA?si=aSMnZdAX7WARyZD3) by [Arpan Neupane](https://youtube.com/@ArpanNeupaneProductions?si=eBabEizliU63fXDV)
@@ -199,3 +256,7 @@ Now you can access the application on your `DNS` or `localhost` on port `3000` e
 2. [Unlocking the Power of NoSQL: FastAPI with MongoDB](https://www.youtube.com/watch?v=QkGqjPFIGCA) by [Eric Roby](https://www.youtube.com/@codingwithroby)
    
 3. [Dockerize FastAPI project like a pro - Step-by-step Tutorial](https://www.youtube.com/watch?v=CzAyaSolZjY&t=277s) by [Stackless Tech](https://www.youtube.com/@stacklesstech)
+   
+4. [Complete Kubernetes Course | Deploy MERN app](https://youtu.be/7XDeI5fyj3w?si=tsLIYVPAU2YcFH8T) by [Hitesh Choudhary](http://www.hiteshChoudhary.com)
+
+5. ["Hello, World!" Docker to Kubernetes](https://guptaachin.hashnode.dev/hello-world-to-kubernetes) by [Achin Gupta](https://guptaachin.vercel.app/)
