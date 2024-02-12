@@ -1,7 +1,8 @@
-import "./App.css";
 import React, { useState } from "react";
+import "./App.css";
 import InputURL from "./InputURL";
 import ShortURL from "./ShortURL";
+import Ping from "./Ping";
 
 function App() {
   const [shortenedURL, setShortenedURL] = useState(""); // State to hold the shortened URL
@@ -13,13 +14,16 @@ function App() {
   };
 
   return (
-    <>
-      <h1>URL Shortener</h1>
-      <InputURL onShortenedURLReceived={handleShortenedURLReceived} />{" "}
-      {/* Pass a callback to handle shortened URL */}
-      <ShortURL shortenedURL={shortenedURL} />{" "}
-      {/* Pass the long URL and shortened URL as props */}
-    </>
+    <div className="container">
+      <div className="status-container">
+        <Ping />
+      </div>
+      <div className="content-container">
+        <h1>URL Shortener</h1>
+        <InputURL onShortenedURLReceived={handleShortenedURLReceived} />
+        <ShortURL shortenedURL={shortenedURL} />
+      </div>
+    </div>
   );
 }
 

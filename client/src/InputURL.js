@@ -23,9 +23,7 @@ export default function InputURL({ onShortenedURLReceived }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          long_url: longUrl,
-        }),
+        body: JSON.stringify({ short_url: "", long_url: longUrl }),
       });
 
       console.log("I got response", response);
@@ -33,7 +31,7 @@ export default function InputURL({ onShortenedURLReceived }) {
         throw new Error("Failed to fetch data");
       }
       setError("");
-      setLongUrl("")
+      setLongUrl("");
       const data = await response.json();
       console.log("InputURL", data.shortenedUrl);
       onShortenedURLReceived(data.shortenedUrl); // Pass the shortened URL to the parent component
@@ -60,7 +58,9 @@ export default function InputURL({ onShortenedURLReceived }) {
         value={longUrl}
         onChange={handleChange}
       />
-      <button onClick={handleSubmit}>Shorten</button>
+      <button className="button" onClick={handleSubmit}>
+        Shorten
+      </button>
       {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );

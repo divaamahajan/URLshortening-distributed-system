@@ -1,6 +1,8 @@
 import random
 
 MAX_LEN = 7
+DNS = "localhost:8000"
+print("DNS:", DNS)
 
 def create_short_url():
     chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
