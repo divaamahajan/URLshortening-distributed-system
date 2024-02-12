@@ -124,7 +124,7 @@ npm install
 ```
 
 **b. Start Client**
-1.  update proxy key in [package.json](client\package.json) file to connect to server (backend) API running at http://localhost:8000
+1.  update proxy key in [package.json](client/package.json) file to connect to server (backend) API running at http://localhost:8000
   
 ```bash
    "proxy": "http://localhost:8000",
@@ -153,7 +153,7 @@ Here's how you can create Dockerfiles for both the client and server components 
 
 #### Option 1: Docker Compose
 
-1.  Update client's proxy key in [package.json](client\package.json) file to connect to server (backend) container's API   
+1.  Update client's proxy key in [package.json](client/package.json) file to connect to server (backend) container's API   
 ```bash
    "proxy": "http://servercontainer:8000",
 ```
@@ -170,7 +170,7 @@ docker-compose up
 #### Option 2: Manual Docker Build and Run
 ##### Building Docker Images:
 
-**Step 1.**  Update client's proxy key in [package.json](client\package.json) file to connect to server (backend) container's API   
+**Step 1.**  Update client's proxy key in [package.json](client/package.json) file to connect to server (backend) container's API   
 ```bash
    "proxy": "http://servercontainer:8000",
 ```
@@ -225,7 +225,7 @@ In short, a Helm chart can be compared to Docker Compose in the sense that both 
 
 
 ### 1. Building Docker Images:
-**Step 1.**  Update client's proxy key in [package.json](client\package.json) file to connect to server (backend) container's API   
+**Step 1.**  Update client's proxy key in [package.json](client/package.json) file to connect to server (backend) container's API   
 ```bash
   "proxy": "http://urlserver-service-urlserver-helm.urlserver-namespace.svc.cluster.local:8000",
 ```
@@ -237,7 +237,7 @@ Follow **step 2** and **Step 3** from [Building Docker Images](#building-docker-
 ### 2. Create helm chart 
 *Make sure kubernetes is enabled in your dockerhub settings*
 **a. for server**
-1. Navigate to server's [helm directory](server\helm\urlserver-helm)
+1. Navigate to server's [helm directory](server/helm/urlserver-helm)
 2. Execute below command to upgraded or install the Helm chart (which has service and deployments) named `urlserver-service` into the Kubernetes cluster, creating the namespace `urlserver-namespace` if it doesn't exist, using the Helm chart located in the current directory.
 ```bash
 helm upgrade --install urlserver-service -n urlserver-namespace --create-namespace .
@@ -256,14 +256,14 @@ You received `urlserver-service-urlserver-helm` as your service name which can b
 * to stop later you can use `helm uninstall urlserver-service -n urlserver-namespace`
 
 **b. for client**
-1. Navigate to client's [helm directory](client\helm\urlclient-helm)
+1. Navigate to client's [helm directory](client/helm/urlclient-helm)
 2. Execute below command to upgraded or install the Helm chart (which has service and deployments) named `urlclient-service` into the Kubernetes cluster, creating the namespace `urlclient-namespace` if it doesn't exist, using the Helm chart located in the current directory.
 ```bash
 helm upgrade --install urlclient-service -n urlclient-namespace --create-namespace .
 ```
 
 ## Notes:
-- If you hosted your server on external DNS say EC2 machines, you can update the `DNS` in [utils file](server\utils\utils.py)
+- If you hosted your server on external DNS say EC2 machines, you can update the `DNS` in [utils file](server/utils/utils.py)
 
   
 ## Refrences
