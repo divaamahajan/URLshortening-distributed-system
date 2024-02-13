@@ -243,7 +243,7 @@ In short, a Helm chart can be compared to Docker Compose in the sense that both 
 **Step 1.**  Update `memcache_host` of cache in [cache config file](server/config/cache.py) file to connect to memcached
   
 ```bash
-   memcache_host = 'urlcache-service-urlcache-helm.urlcache-namespace.svc.cluster.local'
+memcache_host ='urlcache-memcached.default.svc.cluster.local' # to run in K8s
 ```
 This memcached service name and namespace is created while [creating server's helm chart](#2.-create-helm-chart). This naming convention can be helpful for identifying and managing containers when working with Kubernetes.
 
@@ -255,40 +255,38 @@ This backend service name and namespace is created while [creating server's helm
 
 
 *Same as **Step 3**  from [Building Docker Images](#building-docker-images) manually above*
+
 **Step 3** Navigate to the `root directory`  and run the following commands to build the Docker images:
 
 ```bash
-
 # Build the server image
 docker build -t serverimage ./server
 
 # Build the client image
 docker build -t clientimage ./client
-
-# Pull Memcache Image
-docker pull memcached
 ```
 
 ### 2. Create helm chart 
 *Make sure kubernetes is enabled in your dockerhub settings*
 **a. for memcached**
-1. Navigate to backend server's [server/helm/urlcache-helm directory](server/helm/urlcache-helm)
-2.  Execute below command to upgraded or install the Helm chart (which has service and deployments) named `urlcache-service` into the Kubernetes cluster, creating the namespace `urlcache-namespace` if it doesn't exist, using the Helm chart located in the current directory.
+1. Execute below command to upgraded or install the Helm chart (which has service and deployments) named `urlcache` into the Kubernetes cluster, using the [Helm chart](https://artifacthub.io/packages/helm/bitnami/memcached) by aartifact.
 ```bash
-helm upgrade --install urlcache-service -n urlcache-namespace --create-namespace .
+helm upgrade --install urlcache oci://registry-1.docker.io/bitnamicharts/memcached
+
 ```
 3. Check the created with below command
 ```bash
- kubectl get services -n urlcache-namespace
+ kubectl get services -n default
 ```
 Example output:
 ```bash
-NAME                             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)     AGE
-urlcache-service-urlcache-helm   ClusterIP   10.106.116.37   <none>        11211/TCP   9m49s
+NAME                 TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)     AGE
+kubernetes           ClusterIP   10.96.0.1      <none>        443/TCP     30h
+urlcache-memcached   ClusterIP   10.104.94.86   <none>        11211/TCP   34m
 ```
 
-You received `urlcache-service-urlcache-helm` as your service name which can be used by client to connect with it.
-*to stop later you can use `helm uninstall urlcache-service -n urlcache-namespace`*
+You received `urlcache-memcached` as your service name which can be used by client to connect with it.
+
 **b. for backend server**
 1. Navigate to backend server's [server/helm/urlserver-helm directory](server/helm/urlserver-helm)
 2. Execute below command to upgraded or install the Helm chart (which has service and deployments) named `urlserver-service` into the Kubernetes cluster, creating the namespace `urlserver-namespace` if it doesn't exist, using the Helm chart located in the current directory.
@@ -307,6 +305,7 @@ urlserver-service-urlserver-helm   ClusterIP   10.105.226.2   <none>        8000
 
 You received `urlserver-service-urlserver-helm` as your service name which can be used by client to connect with it.
 *to stop later you can use `helm uninstall urlserver-service -n urlserver-namespace`*
+
 
 **c. for client**
 1. Navigate to client's [client/helm/urlclient-helm directory](client/helm/urlclient-helm)
