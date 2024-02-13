@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, redirect
 import random
 
 app = Flask(__name__)
-MAX_LEN = 7
+MAX_LEN = 6
 
 @app.route("/longurl", methods=["POST"])
 def shorten_url():

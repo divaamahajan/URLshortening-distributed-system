@@ -29,16 +29,20 @@ class UrlMappingModel:
         
     def get_short_url(self, long_url: str) -> str:
         # Check cache first
+        print("Finding shortURL from Cache")
         cached_short_url = self.memcache.get(long_url)
         if cached_short_url:
+            print("got shortURL from cache")
             return cached_short_url.decode('utf-8')
 
+        print("shortURL not found in Cache")
+        print("Finding shortURL from MongoDB")
         # If not found in cache, check database
         mapping = self.collection.find_one({"long_url": long_url})
         if mapping:
             short_url = mapping['short_url']
             # Cache the result for future use
-            self.memcache.set(long_url, short_url)
+            self.memcache.set(long_url, short_url,  expire=3600) # 1 hour expiry
             return short_url
         else:
             return None
@@ -46,16 +50,20 @@ class UrlMappingModel:
 
     def get_long_url(self, short_url: str) -> str:
         # Check cache first
+        print("Finding longURL from Cache")
         cached_long_url = self.memcache.get(short_url)
         if cached_long_url:
+            print("got longURL from cache")
             return cached_long_url.decode('utf-8')
 
+        print("longURL not found in Cache")
+        print("Finding longURL from MongoDB")
         # If not found in cache, check database
         mapping = self.collection.find_one({"short_url": short_url})
         if mapping:
             long_url = mapping['long_url']
             # Cache the result for future use
-            self.memcache.set(short_url, long_url)
+            self.memcache.set(short_url, long_url,  expire=3600) # 1 hour expiry
             return long_url
         else:
             return None
@@ -63,7 +71,9 @@ class UrlMappingModel:
 
     def insert_url_mapping(self, short_url: str, long_url: str) -> None:
         # Insert data into the database
+        print("updatimg MongoDB")
         self.collection.insert_one({"short_url": short_url, "long_url": long_url})
         # Update cache with the new mapping
-        self.memcache.set(long_url, short_url)
-        self.memcache.set(short_url, long_url)
+        print("updatimg Cache")
+        self.memcache.set(long_url, short_url,  expire=3600) # 1 hour expiry
+        self.memcache.set(short_url, long_url,  expire=3600) # 1 hour expiry

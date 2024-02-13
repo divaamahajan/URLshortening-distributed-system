@@ -2,7 +2,7 @@ import random
 import subprocess
 import json
 
-MAX_LEN = 7
+MAX_LEN = 6
 DNS = "localhost:8000"
 print("DNS:", DNS)
 
