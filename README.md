@@ -1,20 +1,39 @@
 # URLshortening-distributed-system
 
 ## Overview
-This project implements a scalable URL shortening service utilizing a distributed system architecture. It utilizes FastAPI for the server-side implementation and provides a React-based client-side application for seamless user interaction. The project's database is hosted on MongoDB, ensuring efficient data management and retrieval. Furthermore, the entire system is containerized using Docker, facilitating easy deployment and maintenance across various environments.
+The "URL Shortening Service" project is a sophisticated system designed to efficiently shorten URLs, enabling users to generate shorter, more manageable links from longer ones. Here's a breakdown of its components and functionalities:
 
-## Schema and Models
+1. **Technology Stack**:
+   - **Frontend**: Developed using React, a popular JavaScript library for building user interfaces.
+   - **Backend**: Utilizes FastAPI, a modern, fast (hence the name) web framework for building APIs with Python.
+   - **Data Storage**: MongoDB is employed as the primary database, offering scalability and flexibility for storing URL mappings and related data.
+   - **Caching**: Memcache is used for caching frequently accessed URLs, improving response times and overall system performance.
+   - **Containerization and Orchestration**: Docker is used for containerization, allowing for consistent deployment across different environments. Kubernetes, orchestrated with Helm, manages the deployment, scaling, and operation of containerized applications, ensuring efficient resource utilization and high availability.
 
-- Schemas, located in the [schema directory](https://github.com/divaamahajan/URLshortening-distributed-system/tree/main/server/schema), define the structure of documents in the database. They specify fields, data types, and validation rules.
-- Models, located in the [models directory](https://github.com/divaamahajan/URLshortening-distributed-system/tree/main/server/models), represent and interact with data stored in MongoDB collections. They encapsulate CRUD operations and data validation logic.
+2. **Key Features**:
+   - **URL Shortening**: The system generates shorter, randomized URLs from longer ones, allowing users to share or distribute links more conveniently.
+   - **Scalability**: Designed to handle a large volume of URLs, scaling from handling 100 million daily URLs initially to accommodating 57.7 billion URLs over a span of 10 years. This scalability is crucial for accommodating growth and ensuring system performance remains optimal as usage increases.
+   - **Efficient Redirection**: Utilizes Memcache for efficient caching of URL redirection mappings, enhancing the speed and responsiveness of redirection requests. This ensures a seamless user experience with minimal latency.
+   - **Containerization and Orchestration**: Leveraging Docker and Kubernetes with Helm simplifies deployment and management, enabling automated scaling, rolling updates, and seamless deployment across different environments.
 
-## API Endpoints
+3. **Architecture**:
+   - The architecture is designed to be distributed and scalable, with multiple components (frontend, backend, caching layer, database) working together seamlessly to handle URL shortening requests efficiently.
+   - The use of microservices architecture allows for modular development and independent scaling of components, enabling flexibility and resilience.
+   - Docker containers encapsulate each component, ensuring consistency and portability across different environments.
+   - Kubernetes orchestrates the deployment and scaling of containerized services, providing automated management of resources and workload balancing.
+
+4. **Schema and Models**:
+
+- Schemas, located in the [schema directory](server/schema), define the structure of documents in the database. They specify fields, data types, and validation rules.
+- Models, located in the [models directory](server/models), represent and interact with data stored in MongoDB collections. They encapsulate CRUD operations and data validation logic.
+
+5. **API Endpoints**:
 
 API endpoints are defined in the [`routes.route` module](server/routes/route.py). When the FastAPI application is running, it automatically generates interactive documentation for the API. This documentation can be accessed at [http://localhost:8000/docs](http://localhost:8000/docs) in your web browser. It provides details about the endpoints, input parameters, and response formats, allowing users to explore and test the API interactively.
 
 This FastAPI application provides the following API endpoints:
 
-1. **Shorten URL Endpoint**:
+a. **Shorten URL Endpoint**:
    - **Method**: POST
    - **Path**: `/longurl`
    - **Description**: This endpoint shortens a long URL provided in the request body to a shorter version. If the long URL has already been shortened, it returns the existing short URL.
@@ -31,7 +50,7 @@ This FastAPI application provides the following API endpoints:
      }
      ```
    
-2. **Redirect to Long URL Endpoint**:
+b. **Redirect to Long URL Endpoint**:
    - **Method**: GET
    - **Path**: `/{short_url}`
    - **Description**: This endpoint redirects the client to the original long URL associated with the provided short URL.
@@ -41,6 +60,8 @@ This FastAPI application provides the following API endpoints:
 
 To use these endpoints, send requests to the appropriate URL with the specified method and payload, and the backend server will respond accordingly.
 
+
+Overall, the "URL Shortening Service" project demonstrates a robust and scalable solution for efficiently managing and shortening URLs, leveraging modern technologies and best practices in software development, containerization, and orchestration.
 
 ## Prerequisites
 
