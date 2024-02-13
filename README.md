@@ -3,60 +3,89 @@
 ## Overview
 The "URL Shortening Service" project is a sophisticated system designed to efficiently shorten URLs, enabling users to generate shorter, more manageable links from longer ones. Here's a breakdown of its components and functionalities:
 
-1. **Technology Stack**:
-   - **Frontend**: Developed using React, a popular JavaScript library for building user interfaces.
-   - **Backend**: Utilizes FastAPI, a modern, fast (hence the name) web framework for building APIs with Python.
-   - **Data Storage**: MongoDB is employed as the primary database, offering scalability and flexibility for storing URL mappings and related data.
-   - **Caching**: Memcache is used for caching frequently accessed URLs, improving response times and overall system performance.
-   - **Containerization and Orchestration**: Docker is used for containerization, allowing for consistent deployment across different environments. Kubernetes, orchestrated with Helm, manages the deployment, scaling, and operation of containerized applications, ensuring efficient resource utilization and high availability.
+### Basic Use Cases
+The system handles a significant traffic volume, generating 100 million URLs per day. Its primary use cases include:
 
-2. **Key Features**:
-   - **URL Shortening**: The system generates shorter, randomized URLs from longer ones, allowing users to share or distribute links more conveniently.
-   - **Scalability**: Designed to handle a large volume of URLs, scaling from handling 100 million daily URLs initially to accommodating 57.7 billion URLs over a span of 10 years. This scalability is crucial for accommodating growth and ensuring system performance remains optimal as usage increases.
-   - **Efficient Redirection**: Utilizes Memcache for efficient caching of URL redirection mappings, enhancing the speed and responsiveness of redirection requests. This ensures a seamless user experience with minimal latency.
-   - **Containerization and Orchestration**: Leveraging Docker and Kubernetes with Helm simplifies deployment and management, enabling automated scaling, rolling updates, and seamless deployment across different environments.
+1. **URL Shortening**: given a long URL => return a much shorter URL
+2. **URL Redirecting**: given a shorter URL => redirect to the original URL
+3. **High Availability, Scalability, and Fault Tolerance**
 
-3. **Architecture**:
-   - The architecture is designed to be distributed and scalable, with multiple components (frontend, backend, caching layer, database) working together seamlessly to handle URL shortening requests efficiently.
-   - The use of microservices architecture allows for modular development and independent scaling of components, enabling flexibility and resilience.
-   - Docker containers encapsulate each component, ensuring consistency and portability across different environments.
-   - Kubernetes orchestrates the deployment and scaling of containerized services, providing automated management of resources and workload balancing.
+### Back of the envelope estimation
+- Write operation: 100 million URLs are generated per day.
+- Write operation per second: 100 million / 24 /3600 = 1160
+- Read operation: Assuming ratio of read operation to write operation is 10:1, read operation per second: 1160 * 10 = 11,600
+- Assuming the URL shortener service will run for 10 years, this means we must support 100 million * 365 * 10 = 365 billion records.
+- Assume average URL length is 100.
+- Storage requirement over 10 years: 365 billion * 100 bytes * 10 years = 365 TB
 
-4. **Schema and Models**:
-
-- Schemas, located in the [schema directory](server/schema), define the structure of documents in the database. They specify fields, data types, and validation rules.
-- Models, located in the [models directory](server/models), represent and interact with data stored in MongoDB collections. They encapsulate CRUD operations and data validation logic.
-
-5. **API Endpoints**:
-
-API endpoints are defined in the [`routes.route` module](server/routes/route.py). When the FastAPI application is running, it automatically generates interactive documentation for the API. This documentation can be accessed at [http://localhost:8000/docs](http://localhost:8000/docs) in your web browser. It provides details about the endpoints, input parameters, and response formats, allowing users to explore and test the API interactively.
-
-This FastAPI application provides the following API endpoints:
-
-a. **Shorten URL Endpoint**:
+### API Endpoints:
+API endpoints facilitate the communication between clients and servers. We will design the APIs REST-style.
+1. **URL shortening**: 
    - **Method**: POST
    - **Path**: `/longurl`
    - **Description**: This endpoint shortens a long URL provided in the request body to a shorter version. If the long URL has already been shortened, it returns the existing short URL.
    - **Request Body**: 
      ```json
-     {
-       "long_url": "https://example.com/very-long-url-to-shorten"
-     }
+     {"long_url": "https://example.com/very-long-url-to-shorten"}
      ```
    - **Response**: 
      ```json
-     {
-       "shortenedUrl": "http://localhost:8000/<short_url>"
-     }
+     {"shortenedUrl": "http://localhost:8000/<short_url>"}
      ```
    
-b. **Redirect to Long URL Endpoint**:
+2. **URL redirecting**:
    - **Method**: GET
    - **Path**: `/{short_url}`
    - **Description**: This endpoint redirects the client to the original long URL associated with the provided short URL.
    - **Parameters**: 
      - `short_url`: The short URL generated by the `/longurl` endpoint.
    - **Response**: Redirects the client to the original long URL.
+
+API endpoints are defined in the [`routes.route` module](server/routes/route.py). When the FastAPI application is running, it automatically generates interactive documentation for the API. This documentation can be accessed at [http://localhost:8000/docs](http://localhost:8000/docs) in your web browser. It provides details about the endpoints, input parameters, and response formats, allowing users to explore and test the API interactively.
+
+*The system supports both 301 and 302 redirects, each with its pros and cons. 301 redirects are "permanent" and result in browser caching, reducing server load for subsequent requests. In contrast, 302 redirects are "temporary" and allow better tracking of click rates and sources.*
+
+### URL shorten algorithm
+The system uses a randomized algorithm to generate short URLs. It selects a random length within a specified range and generates a short URL composed of alphanumeric characters. This algorithm ensures uniqueness and randomness in short URL generation.
+2. **Technology Stack**:
+   - **Frontend**: React
+   - **Backend**: FastAPI
+   - **Data Storage**: MongoDB
+   - **Caching**: Memcache
+   - **Containerization and Orchestration**: Docker, Kubernetes with Helm
+     
+3. **Key Features**:
+   - **URL Shortening**: The system generates shorter, randomized URLs from longer ones, allowing users to share or distribute links more conveniently.
+   - **Scalability**: Designed to handle a large volume of URLs, scaling from handling 100 million daily URLs initially to accommodating 57.7 billion URLs over a span of 10 years. This scalability is crucial for accommodating growth and ensuring system performance remains optimal as usage increases.
+   - **Efficient Redirection**: Utilizes Memcache for efficient caching of URL redirection mappings, enhancing the speed and responsiveness of redirection requests. This ensures a seamless user experience with minimal latency.
+   - **Containerization and Orchestration**: Leveraging Docker and Kubernetes with Helm simplifies deployment and management, enabling automated scaling, rolling updates, and seamless deployment across different environments.
+
+4. **Architecture**:
+   - The architecture is designed to be distributed and scalable, with multiple components (frontend, backend, caching layer, database) working together seamlessly to handle URL shortening requests efficiently.
+   - The use of microservices architecture allows for modular development and independent scaling of components, enabling flexibility and resilience.
+   - Docker containers encapsulate each component, ensuring consistency and portability across different environments.
+   - Kubernetes orchestrates the deployment and scaling of containerized services, providing automated management of resources and workload balancing.
+
+The URL Shortening Service aims to support a vast number of URLs over 10 years. Let's see how many URLs can fit within a billion combinations using a maximum short URL length of 6 characters.
+
+- Max length of short URL: 6 characters
+- Character set: a-z, A-Z, 0-9 (62 characters)
+
+| Length | Total Combinations |
+|--------|--------------------|
+|   1    | 62                 |
+|   2    | 3,844              |
+|   3    | 238,328            |
+|   4    | 14,776,336         |
+|   5    | 916,132,832        |
+|   6    | 56,800,235,584     |
+
+The total combinations for lengths 1 to 6 sum up to approximately 56.8 billion, exceeding the requirement of 365 billion URLs over 10 years. Therefore, the chosen configuration allows accommodating the anticipated volume of URLs effectively.
+
+5. **Schema and Models**:
+- Schemas, located in the [schema directory](server/schema), define the structure of documents in the database. They specify fields, data types, and validation rules.
+- Models, located in the [models directory](server/models), represent and interact with data stored in MongoDB collections. They encapsulate CRUD operations and data validation logic.
+
 
 To use these endpoints, send requests to the appropriate URL with the specified method and payload, and the backend server will respond accordingly.
 
