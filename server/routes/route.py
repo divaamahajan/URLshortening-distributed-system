@@ -36,6 +36,7 @@ async def redirect_to_long_url(short_url: str):
     print("for short_url", short_url, "Redirect to long url", long_url)
     if long_url:
         # cache.set(short_url, long_url, time=3600)  # Cache for 1 hour
-        return RedirectResponse(url=long_url, status_code=307)
+        return RedirectResponse(url=long_url, status_code=301)
+        # return RedirectResponse(url=long_url, status_code=307)
     else:
         raise HTTPException(status_code=404, detail="Short URL not found")
