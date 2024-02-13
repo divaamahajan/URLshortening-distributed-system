@@ -2,7 +2,37 @@
 
 ## Overview
 The "URL Shortening Service" project is a sophisticated system designed to efficiently shorten URLs, enabling users to generate shorter, more manageable links from longer ones. Here's a breakdown of its components and functionalities:
+## Table of Contents
 
+1. [Overview](#overview)
+   - [Basic Use Cases (Functional Requirements)](#basic-use-cases-functional-requirements)
+   - [Back of the Envelope Estimation (Non-Functional Requirements)](#back-of-the-envelope-estimation-non-functional-requirements)
+   - [API Endpoints](#api-endpoints)
+   - [URL Shortening Algorithm](#url-shortening-algorithm)
+   - [Schema and Models](#schema-and-models)
+   - [Architecture](#architecture)
+   - [Technology Stack](#technology-stack)
+   - [Key Features](#key-features)
+
+2. [Prerequisites](#prerequisites)
+   - [Setting up MongoDB Atlas Database](#1-setting-up-mongodb-atlas-database)
+   - [Running the Apps Locally (Option 1)](#2-running-the-apps-locally-option-1)
+   - [Dockerizing or Orchestration (Option 2)](#3-dockerizing-or-orchestration-option-2)
+
+3. [If You Want to Test Application Locally Without Docker Containers](#if-you-want-to-test-application-locally-without-docker-containers)
+   - [Running the Backend Server](#1-run-the-backend-server-locally-without-docker)
+   - [Client Setup](#2-client-setup-locally-without-docker)
+
+4. [Dockerizing](#dockerizing)
+   - [Building and Running Docker Images](#building-and-running-docker-images)
+
+5. [Deploying the Services in Kubernetes Using Helm](#deploying-the-services-in-kubernetes-using-helm)
+   - [Building Docker Images](#1-building-docker-images)
+   - [Create Helm Chart](#2-create-helm-chart)
+
+6. [Notes](#notes)
+
+7. [References](#references)
 ### Basic Use Cases (Functional Requirements)
 The system handles a significant traffic volume, generating 100 million URLs per day. Its primary use cases include:
 
@@ -87,11 +117,20 @@ The `UrlMappingModel` class includes methods for:
 To use these endpoints, send requests to the appropriate URL with the specified method and payload, and the backend server will respond accordingly.
     
 ### Architecture:
-   - The architecture is designed to be distributed and scalable, with multiple components (frontend, backend, caching layer, database) working together seamlessly to handle URL shortening requests efficiently.
-   - The use of microservices architecture allows for modular development and independent scaling of components, enabling flexibility and resilience.
-   - Docker containers encapsulate each component, ensuring consistency and portability across different environments.
-   - Kubernetes orchestrates the deployment and scaling of containerized services, providing automated management of resources and workload balancing.
-![URL Shorten Architecture](images\URLShortenArchitecture.png)
+   #### URL Shortening:
+1. **Input**: Receive a longURL.
+2. **Forwarding**: Send the request to FastAPI web servers via the load balancer.
+3. **Cache Check**: Check if the longURL is cached. If so, retrieve the corresponding shortURL and return it.
+4. **Database Check**: If the longURL is not in the cache, check the database. If found, return the corresponding shortURL.
+5. **Short URL Generation**: If the longURL is not cached or in the database, generate a random short URL ensuring uniqueness. Create a new database entry with the shortURL and longURL, setting cache expiry for 1 hour.
+
+#### URL Redirection:
+1. **User Interaction**: User clicks on a short URL link (e.g., https://localhost:8000/zn9edcu).
+2. **Forwarding**: Route the request to FastAPI web servers via the load balancer.
+3. **Cache Lookup**: Check if the shortURL is cached. If found, return the corresponding longURL directly.
+4. **Database Query**: If the shortURL is not in the cache, fetch the longURL from the database. If not found, indicate an invalid shortURL input.
+5. **Return**: Return the longURL to the user.
+<img src="images/URLShortenArchitecture.png" alt="URL Shorten Architecture" width="400"/>
 
 ### Technology Stack:
    - **Frontend**: React
@@ -99,7 +138,7 @@ To use these endpoints, send requests to the appropriate URL with the specified 
    - **Data Storage**: MongoDB
    - **Caching**: Memcache
    - **Containerization and Orchestration**: Docker, Kubernetes with Helm
-   - 
+     
 ### Key Features:
    - **URL Shortening**: The system generates shorter, randomized URLs from longer ones, allowing users to share or distribute links more conveniently.
    - **Scalability**: Designed to handle a large volume of URLs, scaling from handling 100 million daily URLs initially to accommodating 3.5 trillion URLs over a span of 10 years. This scalability is crucial for accommodating growth and ensuring system performance remains optimal as usage increases.
