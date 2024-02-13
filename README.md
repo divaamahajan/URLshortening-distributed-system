@@ -6,11 +6,11 @@ The "URL Shortening Service" project is a sophisticated system designed to effic
 
 1. [Overview](#overview)
    - [Basic Use Cases (Functional Requirements)](#basic-use-cases-functional-requirements)
-   - [Back of the Envelope Estimation (Non-Functional Requirements)](#back-of-the-envelope-estimation-non-functional-requirements)
+   - [Back of the Envelope Estimation (Non-Functional Requirements)](#back-of-the-envelope-estimation-non-functional-requirements)   - 
+   - [Architecture](#architecture)
    - [API Endpoints](#api-endpoints)
    - [URL Shortening Algorithm](#url-shortening-algorithm)
    - [Schema and Models](#schema-and-models)
-   - [Architecture](#architecture)
    - [Technology Stack](#technology-stack)
    - [Key Features](#key-features)
 
@@ -51,6 +51,21 @@ The system handles a significant traffic volume, generating 100 million URLs per
    - Assume average URL length is 100.
       - Storage requirement over 10 years: 365 billion * 100 bytes * 10 years = **365 TB storage**
 
+### Architecture:
+   #### URL Shortening:
+1. **Input**: Receive a longURL.
+2. **Forwarding**: Send the request to FastAPI web servers via the load balancer.
+3. **Cache Check**: Check if the longURL is cached. If so, retrieve the corresponding shortURL and return it.
+4. **Database Check**: If the longURL is not in the cache, check the database. If found, return the corresponding shortURL.
+5. **Short URL Generation**: If the longURL is not cached or in the database, generate a random short URL ensuring uniqueness. Create a new database entry with the shortURL and longURL, setting cache expiry for 1 hour.
+
+#### URL Redirection:
+1. **User Interaction**: User clicks on a short URL link (e.g., https://localhost:8000/zn9edcu).
+2. **Forwarding**: Route the request to FastAPI web servers via the load balancer.
+3. **Cache Lookup**: Check if the shortURL is cached. If found, return the corresponding longURL directly.
+4. **Database Query**: If the shortURL is not in the cache, fetch the longURL from the database. If not found, indicate an invalid shortURL input.
+5. **Return**: Return the longURL to the user.
+<img src="images/URLShortenArchitecture.png" alt="URL Shorten Architecture" width="400"/>
 ### API Endpoints:
 API endpoints facilitate the communication between clients and servers. We will design the APIs REST-style.
 1. **URL shortening**: 
@@ -116,21 +131,6 @@ The `UrlMappingModel` class includes methods for:
 
 To use these endpoints, send requests to the appropriate URL with the specified method and payload, and the backend server will respond accordingly.
     
-### Architecture:
-   #### URL Shortening:
-1. **Input**: Receive a longURL.
-2. **Forwarding**: Send the request to FastAPI web servers via the load balancer.
-3. **Cache Check**: Check if the longURL is cached. If so, retrieve the corresponding shortURL and return it.
-4. **Database Check**: If the longURL is not in the cache, check the database. If found, return the corresponding shortURL.
-5. **Short URL Generation**: If the longURL is not cached or in the database, generate a random short URL ensuring uniqueness. Create a new database entry with the shortURL and longURL, setting cache expiry for 1 hour.
-
-#### URL Redirection:
-1. **User Interaction**: User clicks on a short URL link (e.g., https://localhost:8000/zn9edcu).
-2. **Forwarding**: Route the request to FastAPI web servers via the load balancer.
-3. **Cache Lookup**: Check if the shortURL is cached. If found, return the corresponding longURL directly.
-4. **Database Query**: If the shortURL is not in the cache, fetch the longURL from the database. If not found, indicate an invalid shortURL input.
-5. **Return**: Return the longURL to the user.
-<img src="images/URLShortenArchitecture.png" alt="URL Shorten Architecture" width="400"/>
 
 ### Technology Stack:
    - **Frontend**: React
