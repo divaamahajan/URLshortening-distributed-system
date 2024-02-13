@@ -3,20 +3,23 @@
 ## Overview
 The "URL Shortening Service" project is a sophisticated system designed to efficiently shorten URLs, enabling users to generate shorter, more manageable links from longer ones. Here's a breakdown of its components and functionalities:
 
-### Basic Use Cases
+### Basic Use Cases (Functional Requirements)
 The system handles a significant traffic volume, generating 100 million URLs per day. Its primary use cases include:
 
 1. **URL Shortening**: given a long URL => return a much shorter URL
 2. **URL Redirecting**: given a shorter URL => redirect to the original URL
 3. **High Availability, Scalability, and Fault Tolerance**
 
-### Back of the envelope estimation
-- Write operation: 100 million URLs are generated per day.
-- Write operation per second: 100 million / 24 /3600 = 1160
-- Read operation: Assuming ratio of read operation to write operation is 10:1, read operation per second: 1160 * 10 = 11,600
-- Assuming the URL shortener service will run for 10 years, this means we must support 100 million * 365 * 10 = 365 billion records.
-- Assume average URL length is 100.
-- Storage requirement over 10 years: 365 billion * 100 bytes * 10 years = 365 TB
+### Back of the envelope estimation (Non-Functional Requirements)
+- **High Availability, Scalability, and Fault Tolerance**
+   - Write operation: 100 million URLs are generated per day.
+      - Write operation per second: 100 million / 24 /3600 = **1160 write per sec**
+   - Read operation: Assuming ratio of read operation to write operation is 10:1,
+      - Read operation per second: 1160 * 10 = **11,600 read per sec**
+   - Assuming the URL shortener service will run for 10 years,
+      - this means we must support 100 million * 365 * 10 = **365 billion records of short URL**.
+   - Assume average URL length is 100.
+      - Storage requirement over 10 years: 365 billion * 100 bytes * 10 years = **365 TB storage**
 
 ### API Endpoints:
 API endpoints facilitate the communication between clients and servers. We will design the APIs REST-style.
@@ -380,16 +383,18 @@ helm upgrade --install urlclient-service -n urlclient-namespace --create-namespa
   
 ## Refrences
 
-1. [How to Create a Flask + React Project | Python Backend + React Frontend](https://youtu.be/7LNl2JlZKHA?si=aSMnZdAX7WARyZD3) by [Arpan Neupane](https://youtube.com/@ArpanNeupaneProductions?si=eBabEizliU63fXDV)
-
-2. [Unlocking the Power of NoSQL: FastAPI with MongoDB](https://www.youtube.com/watch?v=QkGqjPFIGCA) by [Eric Roby](https://www.youtube.com/@codingwithroby)
-
-3. [Memcache Fundamentals in Python | Python PyMemcache Tutorial](https://www.youtube.com/watch?v=mPUaQLtWqGs&t=533s) by [Irtiza Hafiz](https://www.irtizahafiz.com/)
+1. [System Design Interview – An Insider's Guide: Volume 2](https://www.amazon.com/System-Design-Interview-Insiders-Guide/dp/1736049119) Chapter 8: Design a URL shortener, by Alex Xu[https://www.linkedin.com/in/alexxubyte/], [Sahn Lam](https://www.linkedin.com/in/sahnlam/)
    
-4. [Dockerize FastAPI project like a pro - Step-by-step Tutorial](https://www.youtube.com/watch?v=CzAyaSolZjY&t=277s) by [Stackless Tech](https://www.youtube.com/@stacklesstech)
+3. [How to Create a Flask + React Project | Python Backend + React Frontend](https://youtu.be/7LNl2JlZKHA?si=aSMnZdAX7WARyZD3) by [Arpan Neupane](https://youtube.com/@ArpanNeupaneProductions?si=eBabEizliU63fXDV)
+
+4. [Unlocking the Power of NoSQL: FastAPI with MongoDB](https://www.youtube.com/watch?v=QkGqjPFIGCA) by [Eric Roby](https://www.youtube.com/@codingwithroby)
+
+5. [Memcache Fundamentals in Python | Python PyMemcache Tutorial](https://www.youtube.com/watch?v=mPUaQLtWqGs&t=533s) by [Irtiza Hafiz](https://www.irtizahafiz.com/)
    
-5. [Complete Kubernetes Course | Deploy MERN app](https://youtu.be/7XDeI5fyj3w?si=tsLIYVPAU2YcFH8T) by [Hitesh Choudhary](http://www.hiteshChoudhary.com)
+6. [Dockerize FastAPI project like a pro - Step-by-step Tutorial](https://www.youtube.com/watch?v=CzAyaSolZjY&t=277s) by [Stackless Tech](https://www.youtube.com/@stacklesstech)
+   
+7. [Complete Kubernetes Course | Deploy MERN app](https://youtu.be/7XDeI5fyj3w?si=tsLIYVPAU2YcFH8T) by [Hitesh Choudhary](http://www.hiteshChoudhary.com)
 
-6. ["Hello, World!" Docker to Kubernetes](https://guptaachin.hashnode.dev/hello-world-to-kubernetes) by [Achin Gupta](https://guptaachin.vercel.app)
+8. ["Hello, World!" Docker to Kubernetes](https://guptaachin.hashnode.dev/hello-world-to-kubernetes) by [Achin Gupta](https://guptaachin.vercel.app)
 
-7. [Python, Memcached, & Kubernetes: Caching in Distributed Cloud Native Platforms](https://medium.com/@sionabraham95/python-memcached-kuberentes-caching-in-distributed-cloud-native-platforms-e35896a8ef5f) by [Siôn Abraham](https://medium.com/@sionabraham95)
+9. [Python, Memcached, & Kubernetes: Caching in Distributed Cloud Native Platforms](https://medium.com/@sionabraham95/python-memcached-kuberentes-caching-in-distributed-cloud-native-platforms-e35896a8ef5f) by [Siôn Abraham](https://medium.com/@sionabraham95)
