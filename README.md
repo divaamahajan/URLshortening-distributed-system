@@ -351,6 +351,6 @@ helm upgrade --install urlclient-service -n urlclient-namespace --create-namespa
    
 5. [Complete Kubernetes Course | Deploy MERN app](https://youtu.be/7XDeI5fyj3w?si=tsLIYVPAU2YcFH8T) by [Hitesh Choudhary](http://www.hiteshChoudhary.com)
 
-6. ["Hello, World!" Docker to Kubernetes](https://guptaachin.hashnode.dev/hello-world-to-kubernetes) by [Achin Gupta](https://guptaachin.vercel.app
+6. ["Hello, World!" Docker to Kubernetes](https://guptaachin.hashnode.dev/hello-world-to-kubernetes) by [Achin Gupta](https://guptaachin.vercel.app)
 
 7. [Python, Memcached, & Kubernetes: Caching in Distributed Cloud Native Platforms](https://medium.com/@sionabraham95/python-memcached-kuberentes-caching-in-distributed-cloud-native-platforms-e35896a8ef5f) by [Siôn Abraham](https://medium.com/@sionabraham95)
