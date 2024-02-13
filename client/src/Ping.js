@@ -3,10 +3,10 @@ import React, { useState } from "react";
 function Ping() {
   const [serviceStatus, setServiceStatus] = useState("");
   const [showStatus, setShowStatus] = useState(false);
-
+  const proxyUrl = "http://servercontainer:8000"
   const checkServiceStatus = async () => {
     try {
-      const response = await fetch("/", {
+      const response = await fetch(proxyUrl, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

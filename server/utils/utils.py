@@ -1,4 +1,6 @@
 import random
+import subprocess
+import json
 
 MAX_LEN = 7
 DNS = "localhost:8000"

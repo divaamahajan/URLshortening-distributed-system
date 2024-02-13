@@ -15,9 +15,9 @@ function App() {
 
   return (
     <div className="container">
-      <div className="status-container">
+      {/* <div className="status-container">
         <Ping />
-      </div>
+      </div> */}
       <div className="content-container">
         <h1>URL Shortener</h1>
         <InputURL onShortenedURLReceived={handleShortenedURLReceived} />

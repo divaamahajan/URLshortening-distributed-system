@@ -3,6 +3,15 @@
 version: "3.8"
 
 services:
+  # Cache service
+  memcached:
+    container_name: memcachedcontainer
+    image: memcached:latest
+    ports:
+      - "11211:11211" # Mapping port 11211 of the host to port 11211 of the container
+    networks:
+      - mynetwork
+
   # Server service
   server:
     container_name: servercontainer
@@ -13,7 +22,10 @@ services:
       - "8000:8000" # Mapping port 8000 of the host to port 8000 of the container
     env_file:
       - ./server/.env # Map container port to host port
-    # command: ["--reload", "externalDNS={your-external-dns}"]
+    depends_on:
+      - memcached # Ensure memcached service is started before the client
+    networks:
+      - mynetwork
 
   # Client service
   client:
@@ -25,3 +37,10 @@ services:
       - "3000:3000" # Mapping port 3000 of the host to port 3000 of the container
     depends_on:
       - server # Ensure server service is started before the client
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
+
