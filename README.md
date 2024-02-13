@@ -45,7 +45,7 @@ API endpoints are defined in the [`routes.route` module](server/routes/route.py)
 
 *The system supports both 301 and 302 redirects, each with its pros and cons. 301 redirects are "permanent" and result in browser caching, reducing server load for subsequent requests. In contrast, 302 redirects are "temporary" and allow better tracking of click rates and sources.*
 
-### URL shorten algorithm
+### URL Shortening algorithm
 The system uses a randomized algorithm to generate short URLs. It selects a random length within a specified range and generates a short URL composed of alphanumeric characters. This algorithm ensures uniqueness and randomness in short URL generation.
 
 The URL Shortening Service aims to support a vast number of URLs over 10 years. Let's see how many URLs can fit within a billion combinations using a maximum short URL length of 7 characters.
