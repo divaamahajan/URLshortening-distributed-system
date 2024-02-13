@@ -3,54 +3,40 @@
 ## Overview
 The "URL Shortening Service" project is a sophisticated system designed to efficiently shorten URLs, enabling users to generate shorter, more manageable links from longer ones. Here's a breakdown of its components and functionalities:
 
-1. **Technology Stack**:
-   - **Frontend**: Developed using React, a popular JavaScript library for building user interfaces.
-   - **Backend**: Utilizes FastAPI, a modern, fast (hence the name) web framework for building APIs with Python.
-   - **Data Storage**: MongoDB is employed as the primary database, offering scalability and flexibility for storing URL mappings and related data.
-   - **Caching**: Memcache is used for caching frequently accessed URLs, improving response times and overall system performance.
-   - **Containerization and Orchestration**: Docker is used for containerization, allowing for consistent deployment across different environments. Kubernetes, orchestrated with Helm, manages the deployment, scaling, and operation of containerized applications, ensuring efficient resource utilization and high availability.
+### Basic Use Cases (Functional Requirements)
+The system handles a significant traffic volume, generating 100 million URLs per day. Its primary use cases include:
 
-2. **Key Features**:
-   - **URL Shortening**: The system generates shorter, randomized URLs from longer ones, allowing users to share or distribute links more conveniently.
-   - **Scalability**: Designed to handle a large volume of URLs, scaling from handling 100 million daily URLs initially to accommodating 57.7 billion URLs over a span of 10 years. This scalability is crucial for accommodating growth and ensuring system performance remains optimal as usage increases.
-   - **Efficient Redirection**: Utilizes Memcache for efficient caching of URL redirection mappings, enhancing the speed and responsiveness of redirection requests. This ensures a seamless user experience with minimal latency.
-   - **Containerization and Orchestration**: Leveraging Docker and Kubernetes with Helm simplifies deployment and management, enabling automated scaling, rolling updates, and seamless deployment across different environments.
+1. **URL Shortening**: given a long URL => return a much shorter URL
+2. **URL Redirecting**: given a shorter URL => redirect to the original URL
+3. **High Availability, Scalability, and Fault Tolerance**
 
-3. **Architecture**:
-   - The architecture is designed to be distributed and scalable, with multiple components (frontend, backend, caching layer, database) working together seamlessly to handle URL shortening requests efficiently.
-   - The use of microservices architecture allows for modular development and independent scaling of components, enabling flexibility and resilience.
-   - Docker containers encapsulate each component, ensuring consistency and portability across different environments.
-   - Kubernetes orchestrates the deployment and scaling of containerized services, providing automated management of resources and workload balancing.
+### Back of the envelope estimation (Non-Functional Requirements)
+- **High Availability, Scalability, and Fault Tolerance**
+   - Write operation: 100 million URLs are generated per day.
+      - Write operation per second: 100 million / 24 /3600 = **1160 write per sec**
+   - Read operation: Assuming ratio of read operation to write operation is 10:1,
+      - Read operation per second: 1160 * 10 = **11,600 read per sec**
+   - Assuming the URL shortener service will run for 10 years,
+      - this means we must support 100 million * 365 * 10 = **365 billion records of short URL**.
+   - Assume average URL length is 100.
+      - Storage requirement over 10 years: 365 billion * 100 bytes * 10 years = **365 TB storage**
 
-4. **Schema and Models**:
-
-- Schemas, located in the [schema directory](server/schema), define the structure of documents in the database. They specify fields, data types, and validation rules.
-- Models, located in the [models directory](server/models), represent and interact with data stored in MongoDB collections. They encapsulate CRUD operations and data validation logic.
-
-5. **API Endpoints**:
-
-API endpoints are defined in the [`routes.route` module](server/routes/route.py). When the FastAPI application is running, it automatically generates interactive documentation for the API. This documentation can be accessed at [http://localhost:8000/docs](http://localhost:8000/docs) in your web browser. It provides details about the endpoints, input parameters, and response formats, allowing users to explore and test the API interactively.
-
-This FastAPI application provides the following API endpoints:
-
-a. **Shorten URL Endpoint**:
+### API Endpoints:
+API endpoints facilitate the communication between clients and servers. We will design the APIs REST-style.
+1. **URL shortening**: 
    - **Method**: POST
    - **Path**: `/longurl`
    - **Description**: This endpoint shortens a long URL provided in the request body to a shorter version. If the long URL has already been shortened, it returns the existing short URL.
    - **Request Body**: 
      ```json
-     {
-       "long_url": "https://example.com/very-long-url-to-shorten"
-     }
+     {"long_url": "https://example.com/very-long-url-to-shorten"}
      ```
    - **Response**: 
      ```json
-     {
-       "shortenedUrl": "http://localhost:8000/<short_url>"
-     }
+     {"shortenedUrl": "http://localhost:8000/<short_url>"}
      ```
    
-b. **Redirect to Long URL Endpoint**:
+2. **URL redirecting**:
    - **Method**: GET
    - **Path**: `/{short_url}`
    - **Description**: This endpoint redirects the client to the original long URL associated with the provided short URL.
@@ -58,10 +44,66 @@ b. **Redirect to Long URL Endpoint**:
      - `short_url`: The short URL generated by the `/longurl` endpoint.
    - **Response**: Redirects the client to the original long URL.
 
+API endpoints are defined in the [`routes.route` module](server/routes/route.py). When the FastAPI application is running, it automatically generates interactive documentation for the API. This documentation can be accessed at [http://localhost:8000/docs](http://localhost:8000/docs) in your web browser. It provides details about the endpoints, input parameters, and response formats, allowing users to explore and test the API interactively.
+
+*The system supports both 301 and 302 redirects, each with its pros and cons. 301 redirects are "permanent" and result in browser caching, reducing server load for subsequent requests. In contrast, 302 redirects are "temporary" and allow better tracking of click rates and sources.*
+
+### URL Shortening algorithm
+The system uses a randomized algorithm to generate short URLs. It selects a random length within a specified range and generates a short URL composed of alphanumeric characters. This algorithm ensures uniqueness and randomness in short URL generation.
+
+The URL Shortening Service aims to support a vast number of URLs over 10 years. Let's see how many URLs can fit within a billion combinations using a maximum short URL length of 7 characters.
+
+- Max length of short URL: 7 characters
+- Character set: a-z, A-Z, 0-9 (62 characters)
+
+| Length | Total Combinations |
+|--------|--------------------|
+|   1    | 62                 |
+|   2    | 3,844              |
+|   3    | 238,328            |
+|   4    | 14,776,336         |
+|   5    | 916,132,832        |
+|   6    | 56,800,235,584     |
+|   7    | 3,521,614,606,208  |
+
+Sum = 62 + 3,844 + 238,328 + 14,776,336 + 916,132,832 + 56,800,235,584 + 3,521,614,606,208 = 3,521,674,269,184
+
+So, the sum is approximately  3,521.67 billion = 3.52167 trillion
+
+The total combinations for lengths 1 to 7 sum up to approximately 3,521.67 billion, exceeding the requirement of 365 billion URLs over 10 years. Therefore, the chosen configuration allows accommodating the anticipated volume of URLs effectively.
+### Schema and Models:
+- Schemas, located in the [schema directory](server/schema), define the structure of documents in the database. They specify fields, data types, and validation rules.
+```python
+    short_url: str
+    long_url: str
+```
+
+- Models, located in the [models directory](server/models), represent and interact with data stored in MongoDB collections. They encapsulate CRUD operations and data validation logic.
+The `UrlMappingModel` class includes methods for:
+- Retrieving short URLs associated with long URLs.
+- Retrieving long URLs associated with short URLs.
+- Inserting URL mappings into the database.
+
 To use these endpoints, send requests to the appropriate URL with the specified method and payload, and the backend server will respond accordingly.
+    
+### Architecture:
+   - The architecture is designed to be distributed and scalable, with multiple components (frontend, backend, caching layer, database) working together seamlessly to handle URL shortening requests efficiently.
+   - The use of microservices architecture allows for modular development and independent scaling of components, enabling flexibility and resilience.
+   - Docker containers encapsulate each component, ensuring consistency and portability across different environments.
+   - Kubernetes orchestrates the deployment and scaling of containerized services, providing automated management of resources and workload balancing.
 
-
-Overall, the "URL Shortening Service" project demonstrates a robust and scalable solution for efficiently managing and shortening URLs, leveraging modern technologies and best practices in software development, containerization, and orchestration.
+### Technology Stack:
+   - **Frontend**: React
+   - **Backend**: FastAPI
+   - **Data Storage**: MongoDB
+   - **Caching**: Memcache
+   - **Containerization and Orchestration**: Docker, Kubernetes with Helm
+   - 
+### Key Features:
+   - **URL Shortening**: The system generates shorter, randomized URLs from longer ones, allowing users to share or distribute links more conveniently.
+   - **Scalability**: Designed to handle a large volume of URLs, scaling from handling 100 million daily URLs initially to accommodating 3.5 trillion URLs over a span of 10 years. This scalability is crucial for accommodating growth and ensuring system performance remains optimal as usage increases.
+   - **Efficient Redirection**: Utilizes Memcache for efficient caching of URL redirection mappings, enhancing the speed and responsiveness of redirection requests. This ensures a seamless user experience with minimal latency.
+   - **Containerization and Orchestration**: Leveraging Docker and Kubernetes with Helm simplifies deployment and management, enabling automated scaling, rolling updates, and seamless deployment across different environments.
 
 ## Prerequisites
 
@@ -341,16 +383,18 @@ helm upgrade --install urlclient-service -n urlclient-namespace --create-namespa
   
 ## Refrences
 
-1. [How to Create a Flask + React Project | Python Backend + React Frontend](https://youtu.be/7LNl2JlZKHA?si=aSMnZdAX7WARyZD3) by [Arpan Neupane](https://youtube.com/@ArpanNeupaneProductions?si=eBabEizliU63fXDV)
-
-2. [Unlocking the Power of NoSQL: FastAPI with MongoDB](https://www.youtube.com/watch?v=QkGqjPFIGCA) by [Eric Roby](https://www.youtube.com/@codingwithroby)
-
-3. [Memcache Fundamentals in Python | Python PyMemcache Tutorial](https://www.youtube.com/watch?v=mPUaQLtWqGs&t=533s) by [Irtiza Hafiz](https://www.irtizahafiz.com/)
+1. [System Design Interview – An Insider's Guide: Volume 2](https://www.amazon.com/System-Design-Interview-Insiders-Guide/dp/1736049119) Chapter 8: Design a URL shortener, by Alex Xu[https://www.linkedin.com/in/alexxubyte/], [Sahn Lam](https://www.linkedin.com/in/sahnlam/)
    
-4. [Dockerize FastAPI project like a pro - Step-by-step Tutorial](https://www.youtube.com/watch?v=CzAyaSolZjY&t=277s) by [Stackless Tech](https://www.youtube.com/@stacklesstech)
+3. [How to Create a Flask + React Project | Python Backend + React Frontend](https://youtu.be/7LNl2JlZKHA?si=aSMnZdAX7WARyZD3) by [Arpan Neupane](https://youtube.com/@ArpanNeupaneProductions?si=eBabEizliU63fXDV)
+
+4. [Unlocking the Power of NoSQL: FastAPI with MongoDB](https://www.youtube.com/watch?v=QkGqjPFIGCA) by [Eric Roby](https://www.youtube.com/@codingwithroby)
+
+5. [Memcache Fundamentals in Python | Python PyMemcache Tutorial](https://www.youtube.com/watch?v=mPUaQLtWqGs&t=533s) by [Irtiza Hafiz](https://www.irtizahafiz.com/)
    
-5. [Complete Kubernetes Course | Deploy MERN app](https://youtu.be/7XDeI5fyj3w?si=tsLIYVPAU2YcFH8T) by [Hitesh Choudhary](http://www.hiteshChoudhary.com)
+6. [Dockerize FastAPI project like a pro - Step-by-step Tutorial](https://www.youtube.com/watch?v=CzAyaSolZjY&t=277s) by [Stackless Tech](https://www.youtube.com/@stacklesstech)
+   
+7. [Complete Kubernetes Course | Deploy MERN app](https://youtu.be/7XDeI5fyj3w?si=tsLIYVPAU2YcFH8T) by [Hitesh Choudhary](http://www.hiteshChoudhary.com)
 
-6. ["Hello, World!" Docker to Kubernetes](https://guptaachin.hashnode.dev/hello-world-to-kubernetes) by [Achin Gupta](https://guptaachin.vercel.app
+8. ["Hello, World!" Docker to Kubernetes](https://guptaachin.hashnode.dev/hello-world-to-kubernetes) by [Achin Gupta](https://guptaachin.vercel.app)
 
-7. [Python, Memcached, & Kubernetes: Caching in Distributed Cloud Native Platforms](https://medium.com/@sionabraham95/python-memcached-kuberentes-caching-in-distributed-cloud-native-platforms-e35896a8ef5f) by [Siôn Abraham](https://medium.com/@sionabraham95)
+9. [Python, Memcached, & Kubernetes: Caching in Distributed Cloud Native Platforms](https://medium.com/@sionabraham95/python-memcached-kuberentes-caching-in-distributed-cloud-native-platforms-e35896a8ef5f) by [Siôn Abraham](https://medium.com/@sionabraham95)
