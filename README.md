@@ -91,6 +91,7 @@ To use these endpoints, send requests to the appropriate URL with the specified 
    - The use of microservices architecture allows for modular development and independent scaling of components, enabling flexibility and resilience.
    - Docker containers encapsulate each component, ensuring consistency and portability across different environments.
    - Kubernetes orchestrates the deployment and scaling of containerized services, providing automated management of resources and workload balancing.
+![URL Shorten Architecture](images\URLShortenArchitecture.png)
 
 ### Technology Stack:
    - **Frontend**: React
