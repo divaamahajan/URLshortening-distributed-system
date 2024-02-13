@@ -47,28 +47,10 @@ API endpoints are defined in the [`routes.route` module](server/routes/route.py)
 
 ### URL shorten algorithm
 The system uses a randomized algorithm to generate short URLs. It selects a random length within a specified range and generates a short URL composed of alphanumeric characters. This algorithm ensures uniqueness and randomness in short URL generation.
-2. **Technology Stack**:
-   - **Frontend**: React
-   - **Backend**: FastAPI
-   - **Data Storage**: MongoDB
-   - **Caching**: Memcache
-   - **Containerization and Orchestration**: Docker, Kubernetes with Helm
-     
-3. **Key Features**:
-   - **URL Shortening**: The system generates shorter, randomized URLs from longer ones, allowing users to share or distribute links more conveniently.
-   - **Scalability**: Designed to handle a large volume of URLs, scaling from handling 100 million daily URLs initially to accommodating 57.7 billion URLs over a span of 10 years. This scalability is crucial for accommodating growth and ensuring system performance remains optimal as usage increases.
-   - **Efficient Redirection**: Utilizes Memcache for efficient caching of URL redirection mappings, enhancing the speed and responsiveness of redirection requests. This ensures a seamless user experience with minimal latency.
-   - **Containerization and Orchestration**: Leveraging Docker and Kubernetes with Helm simplifies deployment and management, enabling automated scaling, rolling updates, and seamless deployment across different environments.
 
-4. **Architecture**:
-   - The architecture is designed to be distributed and scalable, with multiple components (frontend, backend, caching layer, database) working together seamlessly to handle URL shortening requests efficiently.
-   - The use of microservices architecture allows for modular development and independent scaling of components, enabling flexibility and resilience.
-   - Docker containers encapsulate each component, ensuring consistency and portability across different environments.
-   - Kubernetes orchestrates the deployment and scaling of containerized services, providing automated management of resources and workload balancing.
+The URL Shortening Service aims to support a vast number of URLs over 10 years. Let's see how many URLs can fit within a billion combinations using a maximum short URL length of 7 characters.
 
-The URL Shortening Service aims to support a vast number of URLs over 10 years. Let's see how many URLs can fit within a billion combinations using a maximum short URL length of 6 characters.
-
-- Max length of short URL: 6 characters
+- Max length of short URL: 7 characters
 - Character set: a-z, A-Z, 0-9 (62 characters)
 
 | Length | Total Combinations |
@@ -79,18 +61,46 @@ The URL Shortening Service aims to support a vast number of URLs over 10 years. 
 |   4    | 14,776,336         |
 |   5    | 916,132,832        |
 |   6    | 56,800,235,584     |
+|   7    | 3,521,614,606,208  |
 
-The total combinations for lengths 1 to 6 sum up to approximately 56.8 billion, exceeding the requirement of 365 billion URLs over 10 years. Therefore, the chosen configuration allows accommodating the anticipated volume of URLs effectively.
+Sum = 62 + 3,844 + 238,328 + 14,776,336 + 916,132,832 + 56,800,235,584 + 3,521,614,606,208 = 3,521,674,269,184
 
-5. **Schema and Models**:
+So, the sum is approximately  3,521.67 billion = 3.52167 trillion
+
+The total combinations for lengths 1 to 7 sum up to approximately 3,521.67 billion, exceeding the requirement of 365 billion URLs over 10 years. Therefore, the chosen configuration allows accommodating the anticipated volume of URLs effectively.
+### Schema and Models:
 - Schemas, located in the [schema directory](server/schema), define the structure of documents in the database. They specify fields, data types, and validation rules.
-- Models, located in the [models directory](server/models), represent and interact with data stored in MongoDB collections. They encapsulate CRUD operations and data validation logic.
+```python
+    short_url: str
+    long_url: str
+```
 
+- Models, located in the [models directory](server/models), represent and interact with data stored in MongoDB collections. They encapsulate CRUD operations and data validation logic.
+The `UrlMappingModel` class includes methods for:
+- Retrieving short URLs associated with long URLs.
+- Retrieving long URLs associated with short URLs.
+- Inserting URL mappings into the database.
 
 To use these endpoints, send requests to the appropriate URL with the specified method and payload, and the backend server will respond accordingly.
+    
+### Architecture:
+   - The architecture is designed to be distributed and scalable, with multiple components (frontend, backend, caching layer, database) working together seamlessly to handle URL shortening requests efficiently.
+   - The use of microservices architecture allows for modular development and independent scaling of components, enabling flexibility and resilience.
+   - Docker containers encapsulate each component, ensuring consistency and portability across different environments.
+   - Kubernetes orchestrates the deployment and scaling of containerized services, providing automated management of resources and workload balancing.
 
-
-Overall, the "URL Shortening Service" project demonstrates a robust and scalable solution for efficiently managing and shortening URLs, leveraging modern technologies and best practices in software development, containerization, and orchestration.
+### Technology Stack:
+   - **Frontend**: React
+   - **Backend**: FastAPI
+   - **Data Storage**: MongoDB
+   - **Caching**: Memcache
+   - **Containerization and Orchestration**: Docker, Kubernetes with Helm
+   - 
+### Key Features:
+   - **URL Shortening**: The system generates shorter, randomized URLs from longer ones, allowing users to share or distribute links more conveniently.
+   - **Scalability**: Designed to handle a large volume of URLs, scaling from handling 100 million daily URLs initially to accommodating 3.5 trillion URLs over a span of 10 years. This scalability is crucial for accommodating growth and ensuring system performance remains optimal as usage increases.
+   - **Efficient Redirection**: Utilizes Memcache for efficient caching of URL redirection mappings, enhancing the speed and responsiveness of redirection requests. This ensures a seamless user experience with minimal latency.
+   - **Containerization and Orchestration**: Leveraging Docker and Kubernetes with Helm simplifies deployment and management, enabling automated scaling, rolling updates, and seamless deployment across different environments.
 
 ## Prerequisites
 
