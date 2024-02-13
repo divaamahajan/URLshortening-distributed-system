@@ -66,6 +66,8 @@ The system handles a significant traffic volume, generating 100 million URLs per
 4. **Database Query**: If the shortURL is not in the cache, fetch the longURL from the database. If not found, indicate an invalid shortURL input.
 5. **Return**: Return the longURL to the user.
 <img src="images/URLShortenArchitecture.png" alt="URL Shorten Architecture" width="400"/>
+
+
 ### API Endpoints:
 API endpoints facilitate the communication between clients and servers. We will design the APIs REST-style.
 1. **URL shortening**: 
