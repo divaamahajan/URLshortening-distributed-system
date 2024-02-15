@@ -119,13 +119,13 @@ So, the sum is approximately  3,521.67 billion = 3.52167 trillion
 
 The total combinations for lengths 1 to 7 sum up to approximately 3,521.67 billion, exceeding the requirement of 365 billion URLs over 10 years. Therefore, the chosen configuration allows accommodating the anticipated volume of URLs effectively.
 ### Schema and Models:
-- Schemas, located in the [schema directory](server/schema), define the structure of documents in the database. They specify fields, data types, and validation rules.
+**Schemas**, located in the [schema directory](server/schema), define the structure of documents in the database. They specify fields, data types, and validation rules.
 ```python
     short_url: str
     long_url: str
 ```
 
-- Models, located in the [models directory](server/models), represent and interact with data stored in MongoDB collections. They encapsulate CRUD operations and data validation logic.
+**Models**, located in the [models directory](server/models), represent and interact with data stored in MongoDB collections. They encapsulate CRUD operations and data validation logic.
 The `UrlMappingModel` class includes methods for:
 - Retrieving short URLs associated with long URLs.
 - Retrieving long URLs associated with short URLs.
