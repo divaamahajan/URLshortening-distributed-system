@@ -423,7 +423,7 @@ helm upgrade --install urlclient-service -n urlclient-namespace --create-namespa
 - If you hosted your server on external DNS say EC2 machines, you can update the `DNS` in [utils file](server/utils/utils.py)
 
   
-## Refrences
+## References 
 
 1. [System Design Interview – An Insider's Guide: Volume 2](https://www.amazon.com/System-Design-Interview-Insiders-Guide/dp/1736049119) Chapter 8: Design a URL shortener, by [Alex Xu](https://www.linkedin.com/in/alexxubyte/), [Sahn Lam](https://www.linkedin.com/in/sahnlam/)
    
