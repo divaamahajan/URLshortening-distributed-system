@@ -4,36 +4,37 @@ The "URL Shortening Service" project providing users with shorter links for easi
 ## Table of Contents
 
 1. [Project Overview](#1-project-overview)
-   1.1. [Functional Requirements: Basic Use Cases](#11-functional-requirements-basic-use-cases)
-   1.2. [Non-Functional Requirements: Back of the Envelope Estimation](#12-non-functional-requirements-back-of-the-envelope-estimation)
-   1.3. [System Architecture](#13-system-architecture)
-   1.4. [API Endpoints](#14-api-endpoints)
-   1.5. [URL Shortening Algorithm](#15-url-shortening-algorithm)
-   1.6. [Schema and Models](#16-schema-and-models)
-   1.7. [Technology Stack](#17-technology-stack)
-   1.8. [Key Features](#18-key-features)
+   - 1.1. [Functional Requirements: Basic Use Cases](#11-functional-requirements-basic-use-cases)
+   - 1.2. [Non-Functional Requirements: Back of the Envelope Estimation](#12-non-functional-requirements-back-of-the-envelope-estimation)
+   - 1.3. [System Architecture](#13-system-architecture)
+   - 1.4. [API Endpoints](#14-api-endpoints)
+   - 1.5. [URL Shortening Algorithm](#15-url-shortening-algorithm)
+   - 1.6. [Schema and Models](#16-schema-and-models)
+   - 1.7. [Technology Stack](#17-technology-stack)
+   - 1.8. [Key Features](#18-key-features)
 
 2. [Setup and Prerequisites](#2-setup-and-prerequisites)
-   2.1. [Setting up MongoDB Atlas Database](#21-setting-up-mongodb-atlas-database)
-   2.2. [(Option 1) Running the Apps Locally](#22-option-1-running-the-apps-locally)
-   2.3. [(Option 2) Dockerization or Orchestration](#23-option-2-dockerization-or-orchestration)
+   - 2.1. [Setting up MongoDB Atlas Database](#21-setting-up-mongodb-atlas-database)
+   - 2.2. [(Option 1) Running the Apps Locally](#22-option-1-running-the-apps-locally)
+   - 2.3. [(Option 2) Dockerization or Orchestration](#23-option-2-dockerization-or-orchestration)
 
 3. [Local Testing Without Docker](#3-local-testing-without-docker)
-   3.1. [Run the backend Server](#31-run-the-backend-server)
-   3.2. [Client Setup](#32-client-setup)
+   - 3.1. [Run the backend Server](#31-run-the-backend-server)
+   - 3.2. [Client Setup](#32-client-setup)
 
 4. [Dockerization](#4-dockerization)
-   4.1. [Configuring Cache and API Connections](#41-configuring-cache-and-api-connections)
-   4.2. [Option 1: Docker Compose](#42-option-1-docker-compose)
-   4.3. [Option 2: Manual Docker Build and Run](#43-option-2-manual-docker-build-and-run)
+   - 4.1. [Configuring Cache and API Connections](#41-configuring-cache-and-api-connections)
+   - 4.2. [Option 1: Docker Compose](#42-option-1-docker-compose)
+   - 4.3. [Option 2: Manual Docker Build and Run](#43-option-2-manual-docker-build-and-run)
 
 5. [Deployment in Kubernetes Using Helm](#5-deployment-in-kubernetes-using-helm)
-   5.1. [Configuring Cache and API Connections](#51-configuring-cache-and-api-connections)
-   5.2. [Creating Helm Chart](#52-creating-helm-chart)
+   - 5.1. [Configuring Cache and API Connections](#51-configuring-cache-and-api-connections)
+   - 5.2. [Creating Helm Chart](#52-creating-helm-chart)
 
 6. [Additional Notes](#6-additional-notes)
 
 7. [References](#7-references)
+
 
 ---
 
