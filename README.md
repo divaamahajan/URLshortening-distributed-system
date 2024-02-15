@@ -1,46 +1,53 @@
 # URLshortening-distributed-system
+The "URL Shortening Service" project providing users with shorter links for easier sharing. It efficiently handles massive volumes of URLs daily and ensures essential functionalities like URL shortening and redirection. Powered by technologies like React, FastAPI, MongoDB, and Memcache, the project emphasizes scalability and efficiency. Deployment is made seamless through Docker and Kubernetes with Helm, showcasing a modern approach to web application architecture.
 
-## Overview
-The "URL Shortening Service" project is a sophisticated system designed to efficiently shorten URLs, enabling users to generate shorter, more manageable links from longer ones. Here's a breakdown of its components and functionalities:
 ## Table of Contents
 
-1. [Overview](#overview)
-   - [Basic Use Cases (Functional Requirements)](#basic-use-cases-functional-requirements)
-   - [Back of the Envelope Estimation (Non-Functional Requirements)](#back-of-the-envelope-estimation-non-functional-requirements)   - 
-   - [Architecture](#architecture)
-   - [API Endpoints](#api-endpoints)
-   - [URL Shortening Algorithm](#url-shortening-algorithm)
-   - [Schema and Models](#schema-and-models)
-   - [Technology Stack](#technology-stack)
-   - [Key Features](#key-features)
+1. [Project Overview](#1-project-overview)
+   1.1. [Functional Requirements: Basic Use Cases](#11-functional-requirements-basic-use-cases)
+   1.2. [Non-Functional Requirements: Back of the Envelope Estimation](#12-non-functional-requirements-back-of-the-envelope-estimation)
+   1.3. [System Architecture](#13-system-architecture)
+   1.4. [API Endpoints](#14-api-endpoints)
+   1.5. [URL Shortening Algorithm](#15-url-shortening-algorithm)
+   1.6. [Schema and Models](#16-schema-and-models)
+   1.7. [Technology Stack](#17-technology-stack)
+   1.8. [Key Features](#18-key-features)
 
-2. [Prerequisites](#prerequisites)
-   - [Setting up MongoDB Atlas Database](#1-setting-up-mongodb-atlas-database)
-   - [Running the Apps Locally (Option 1)](#2-running-the-apps-locally-option-1)
-   - [Dockerizing or Orchestration (Option 2)](#3-dockerizing-or-orchestration-option-2)
+2. [Setup and Prerequisites](#2-setup-and-prerequisites)
+   2.1. [Setting up MongoDB Atlas Database](#21-setting-up-mongodb-atlas-database)
+   2.2. [(Option 1) Running the Apps Locally](#22-option-1-running-the-apps-locally)
+   2.3. [(Option 2) Dockerization or Orchestration](#23-option-2-dockerization-or-orchestration)
 
-3. [If You Want to Test Application Locally Without Docker Containers](#if-you-want-to-test-application-locally-without-docker-containers)
-   - [Running the Backend Server](#1-run-the-backend-server-locally-without-docker)
-   - [Client Setup](#2-client-setup-locally-without-docker)
+3. [Local Testing Without Docker](#3-local-testing-without-docker)
+   3.1. [Run the backend Server](#31-run-the-backend-server)
+   3.2. [Client Setup](#32-client-setup)
 
-4. [Dockerizing](#dockerizing)
-   - [Building and Running Docker Images](#building-and-running-docker-images)
+4. [Dockerization](#4-dockerization)
+   4.1. [Configuring Cache and API Connections](#41-configuring-cache-and-api-connections)
+   4.2. [Option 1: Docker Compose](#42-option-1-docker-compose)
+   4.3. [Option 2: Manual Docker Build and Run](#43-option-2-manual-docker-build-and-run)
 
-5. [Deploying the Services in Kubernetes Using Helm](#deploying-the-services-in-kubernetes-using-helm)
-   - [Building Docker Images](#1-building-docker-images)
-   - [Create Helm Chart](#2-create-helm-chart)
+5. [Deployment in Kubernetes Using Helm](#5-deployment-in-kubernetes-using-helm)
+   5.1. [Configuring Cache and API Connections](#51-configuring-cache-and-api-connections)
+   5.2. [Creating Helm Chart](#52-creating-helm-chart)
 
-6. [Notes](#notes)
+6. [Additional Notes](#6-additional-notes)
 
-7. [References](#references)
-### Basic Use Cases (Functional Requirements)
+7. [References](#7-references)
+
+---
+
+## 1. Project Overview
+The "URL Shortening Service" project is a sophisticated system designed to efficiently shorten URLs, enabling users to generate shorter, more manageable links from longer ones. Here's a breakdown of its components and functionalities:
+
+### 1.1. Functional Requirements: Basic Use Cases
 The system handles a significant traffic volume, generating 100 million URLs per day. Its primary use cases include:
 
 1. **URL Shortening**: given a long URL => return a much shorter URL
 2. **URL Redirecting**: given a shorter URL => redirect to the original URL
 3. **High Availability, Scalability, and Fault Tolerance**
 
-### Back of the envelope estimation (Non-Functional Requirements)
+### 1.2. Non-Functional Requirements: Back of the Envelope Estimation
 - **High Availability, Scalability, and Fault Tolerance**
    - Write operation: 100 million URLs are generated per day.
       - Write operation per second: 100 million / 24 /3600 = **1160 write per sec**
@@ -51,7 +58,7 @@ The system handles a significant traffic volume, generating 100 million URLs per
    - Assume average URL length is 100.
       - Storage requirement over 10 years: 365 billion * 100 bytes * 10 years = **365 TB storage**
 
-### Architecture:
+### 1.3. System Architecture:
    #### URL Shortening:
 1. **Input**: Receive a longURL.
 2. **Forwarding**: Send the request to FastAPI web servers via the load balancer.
@@ -68,7 +75,7 @@ The system handles a significant traffic volume, generating 100 million URLs per
 <img src="images/URLShortenArchitecture.png" alt="URL Shorten Architecture" width="400"/>
 
 
-### API Endpoints:
+### 1.4. API Endpoints:
 API endpoints facilitate the communication between clients and servers. We will design the APIs REST-style.
 1. **URL shortening**: 
    - **Method**: POST
@@ -95,7 +102,7 @@ API endpoints are defined in the [`routes.route` module](server/routes/route.py)
 
 *The system supports both 301 and 302 redirects, each with its pros and cons. 301 redirects are "permanent" and result in browser caching, reducing server load for subsequent requests. In contrast, 302 redirects are "temporary" and allow better tracking of click rates and sources.*
 
-### URL Shortening algorithm
+### 1.5. URL Shortening algorithm
 The system uses a randomized algorithm to generate short URLs. It selects a random length within a specified range and generates a short URL composed of alphanumeric characters. This algorithm ensures uniqueness and randomness in short URL generation.
 
 The URL Shortening Service aims to support a vast number of URLs over 10 years. Let's see how many URLs can fit within a billion combinations using a maximum short URL length of 7 characters.
@@ -118,7 +125,8 @@ Sum = 62 + 3,844 + 238,328 + 14,776,336 + 916,132,832 + 56,800,235,584 + 3,521,6
 So, the sum is approximately  3,521.67 billion = 3.52167 trillion
 
 The total combinations for lengths 1 to 7 sum up to approximately 3,521.67 billion, exceeding the requirement of 365 billion URLs over 10 years. Therefore, the chosen configuration allows accommodating the anticipated volume of URLs effectively.
-### Schema and Models:
+
+### 1.6. Schema and Models:
 **Schemas**, located in the [schema directory](server/schema), define the structure of documents in the database. They specify fields, data types, and validation rules.
 ```python
     short_url: str
@@ -134,22 +142,24 @@ The `UrlMappingModel` class includes methods for:
 To use these endpoints, send requests to the appropriate URL with the specified method and payload, and the backend server will respond accordingly.
     
 
-### Technology Stack:
+### 1.7. Technology Stack:
    - **Frontend**: React
    - **Backend**: FastAPI
    - **Data Storage**: MongoDB
    - **Caching**: Memcache
    - **Containerization and Orchestration**: Docker, Kubernetes with Helm
      
-### Key Features:
+### 1.8. Key Features:
    - **URL Shortening**: The system generates shorter, randomized URLs from longer ones, allowing users to share or distribute links more conveniently.
    - **Scalability**: Designed to handle a large volume of URLs, scaling from handling 100 million daily URLs initially to accommodating 3.5 trillion URLs over a span of 10 years. This scalability is crucial for accommodating growth and ensuring system performance remains optimal as usage increases.
    - **Efficient Redirection**: Utilizes Memcache for efficient caching of URL redirection mappings, enhancing the speed and responsiveness of redirection requests. This ensures a seamless user experience with minimal latency.
    - **Containerization and Orchestration**: Leveraging Docker and Kubernetes with Helm simplifies deployment and management, enabling automated scaling, rolling updates, and seamless deployment across different environments.
 
-## Prerequisites
+---
 
-### 1. Setting up MongoDB Atlas Database
+## 2. Setup and Prerequisites
+
+### 2.1. Setting up MongoDB Atlas Database
 
 1. **Create MongoDB Atlas Account:** Sign up for a MongoDB Atlas account on [cloud.mongodb.com](https://cloud.mongodb.com/).
 2. **Set up a Cluster:** Create a free cluster, choose your preferred cloud provider (AWS, etc.), select a region, and set a username/password for database access.
@@ -173,22 +183,24 @@ Database configuration is managed in the [configs.database](server/config/databa
 
    > The FastAPI application uses this connection string to connect to the MongoDB Atlas cluster.
 
-### [2. Running the Apps Locally (Option 1)](#if-you-want-to-test-application-locally-without-docker-containers)
+### 2.2. (Option 1) [Running the Apps Locally](#3-local-testing-without-docker) 
 
 
 1. **Install Python:** Set up Python for the FastAPI backend server.
 2. **Install Node.js and npm:** Ensure that you have Node.js and npm installed for the React frontend client. You can download and install Node.js from [Node.js Downloads](https://nodejs.org/en/download/). npm is included with Node.js.
 3. **Install Memcached:** Install Memcached for caching functionality and start it using `memcached` command.
 
-### 3. [Dockerizing](#dockerising) or [Orchestration](#deploying-the-services-in-kubernetes-using-helm) (Option 2)
+### 2.3. (Option 2) [Dockerization](#4-dockerization) or [Orchestration](#5-deployment-in-kubernetes-using-helm)
 
 - **Sign up and Install DockerHub:** Sign up for DockerHub and install Docker for containerization and orchestration capabilities.
 
+---
 
-## If you want to test application locally without docker containers
-### 1. Run the backend Server (locally without docker)
+## 3. Local Testing Without Docker
+### 3.1. Run the backend Server
 
 Navigate to the [server directory](server)
+
 **a. Create virtual environment**
    - Run the following command to create a virtual environment named `venv`:
    ```
@@ -207,6 +219,8 @@ Navigate to the [server directory](server)
      ```
 -  After activation, you should see `(venv)` at the beginning of your command prompt, indicating that the virtual environment is active.
 -  *When you're done working in the virtual environment, you can deactivate it by running the `deactivate` command in the terminal.*
+
+
 **b. Install Dependencies**
 
 Run the following command to install the required Python dependencies:
@@ -214,6 +228,7 @@ Run the following command to install the required Python dependencies:
 ```
 pip install -r requirements.txt
 ```
+
 
 **c. Start FastAPI Server**
 
@@ -233,7 +248,7 @@ uvicorn main:app --reload
 - The main file used by `uvicorn` to run the server is `main.py`. [main-server](server/main.py) python file.
 
 
-### 2. Client Setup (locally without docker)
+### 3.2. Client Setup
 
 Navigate to the [client directory](client)
 
@@ -244,6 +259,7 @@ Run the following command to install the required Node.js dependencies for the c
 ```
 npm install
 ```
+
 
 **b. Start Client**
 1.  update proxy key in [package.json](client/package.json) file to connect to server (backend) API running at http://localhost:8000
@@ -261,7 +277,9 @@ npm start
 
 - The client is now running on [http://localhost:3000](http://localhost:3000) and you can start interacting with you application through this link
 
-## Dockerising
+---
+
+## 4. Dockerization
 
 Here's how you can create Dockerfiles for both the client and server components of your URL shortening distributed system:
 
@@ -269,9 +287,7 @@ Here's how you can create Dockerfiles for both the client and server components 
 
 2. [Dockerfile for Client (React Frontend)](server/Dockerfile)
 
-### Building and Running Docker Images
-
-- Docker Compose is primarily used for orchestrating containers and defining multi-container applications on a single host or in a local development environment.
+### 4.1. Configuring Cache and API Connections
 
 **Step 1.**  Update `memcache_host` of cache in [cache config file](server/config/cache.py) file to connect to memcached running at http://memcachedcontainer:11211
   
@@ -280,12 +296,16 @@ Here's how you can create Dockerfiles for both the client and server components 
 ```
 This container name is given in  [`docker-compose.yaml`](docker-compose.yaml) file under the service named `memcached`, where we specified that the container created from this service should be named `memcachedcontainer`. This naming convention can be helpful for identifying and managing containers when working with Docker.
 
+
 **Step 2.** Update client's proxy key in [package.json](client/package.json) file to connect to server (backend) container's API   
 ```bash
    "proxy": "http://servercontainer:8000",
 ```
-#### Option 1: Docker Compose
+
+#### 4.2. Option 1: Docker Compose
+- Docker Compose is primarily used for orchestrating containers and defining multi-container applications on a single host or in a local development environment.
 This container name is given in  [`docker-compose.yaml`](docker-compose.yaml) file under `services` key, under the service named `server`, where we specified that the container created from this service should be named `servercontainer`. This naming convention can be helpful for identifying and managing containers when working with Docker.
+
     
 **Step 3.** Execute the following command to run both server and client containers using `docker-compose`:
 
@@ -294,7 +314,7 @@ docker-compose up -d
 ```
 
 
-#### Option 2: Manual Docker Build and Run
+#### 4.3. Option 2: Manual Docker Build and Run
 ##### Building Docker Images:
 **Step 3.** Navigate to the `root directory`  and run the following commands to build the Docker images:
 
@@ -330,12 +350,13 @@ docker run -d -p 3000:3000 --name clientcontainer --network mynetwork --link ser
 
 - This command maps port 8000 of the host to port 8000 of the container for the server, and port 3000 of the host to port 3000 of the container for the client.
 
----
 
 These Dockerfiles enable you to containerize both the server (FastAPI backend) and the client (React frontend) components of your URL shortening distributed system.
 Now you can access the application on your `DNS` or `localhost` on port `3000` ex:- [http://localhost:3000/](http://localhost:3000/)
 
-## Deploying the services in Kubernetes using Helm
+---
+
+## 5. Deployment in Kubernetes Using Helm
 A Helm chart is a package format for Kubernetes applications. It contains all the Kubernetes manifest files (such as Deployments, Services, ConfigMaps, etc.) necessary to deploy and manage a specific application or service in a Kubernetes cluster. Helm charts are used to streamline the process of deploying complex applications in Kubernetes by encapsulating all the required configuration and dependencies into a single package.
 
 In short, a Helm chart can be compared to Docker Compose in the sense that both are tools used for deploying and managing applications, but they operate at different levels:
@@ -343,7 +364,7 @@ In short, a Helm chart can be compared to Docker Compose in the sense that both 
 -- Docker Compose handles application-level orchestration, while Helm charts manage deployment and dependencies at the Kubernetes infrastructure level.
 
 
-### 1. Building Docker Images:
+### 5.1. Configuring Cache and API Connections:
 
 **Step 1.**  Update `memcache_host` of cache in [cache config file](server/config/cache.py) file to connect to memcached
   
@@ -371,15 +392,17 @@ docker build -t serverimage ./server
 docker build -t clientimage ./client
 ```
 
-### 2. Create helm chart 
+### 5.2. Creating Helm Chart
 *Make sure kubernetes is enabled in your dockerhub settings*
+
 **a. for memcached**
 1. Execute below command to upgraded or install the Helm chart (which has service and deployments) named `urlcache` into the Kubernetes cluster, using the [Helm chart](https://artifacthub.io/packages/helm/bitnami/memcached) by aartifact.
 ```bash
 helm upgrade --install urlcache oci://registry-1.docker.io/bitnamicharts/memcached
 
 ```
-3. Check the created with below command
+
+2. Check the created with below command
 ```bash
  kubectl get services -n default
 ```
@@ -392,12 +415,15 @@ urlcache-memcached   ClusterIP   10.104.94.86   <none>        11211/TCP   34m
 
 You received `urlcache-memcached` as your service name which can be used by client to connect with it.
 
+
 **b. for backend server**
 1. Navigate to backend server's [server/helm/urlserver-helm directory](server/helm/urlserver-helm)
+   
 2. Execute below command to upgraded or install the Helm chart (which has service and deployments) named `urlserver-service` into the Kubernetes cluster, creating the namespace `urlserver-namespace` if it doesn't exist, using the Helm chart located in the current directory.
 ```bash
 helm upgrade --install urlserver-service -n urlserver-namespace --create-namespace .
 ```
+
 3. Check the created with below command
 ```bash
  kubectl get services -n urlserver-namespace
@@ -414,16 +440,20 @@ You received `urlserver-service-urlserver-helm` as your service name which can b
 
 **c. for client**
 1. Navigate to client's [client/helm/urlclient-helm directory](client/helm/urlclient-helm)
+   
 2. Execute below command to upgraded or install the Helm chart (which has service and deployments) named `urlclient-service` into the Kubernetes cluster, creating the namespace `urlclient-namespace` if it doesn't exist, using the Helm chart located in the current directory.
 ```bash
 helm upgrade --install urlclient-service -n urlclient-namespace --create-namespace .
 ```
 
-## Notes:
+---
+
+## 6. Additional Notes:
 - If you hosted your server on external DNS say EC2 machines, you can update the `DNS` in [utils file](server/utils/utils.py)
 
-  
-## References 
+---
+
+## 7. References 
 
 1. [System Design Interview – An Insider's Guide: Volume 2](https://www.amazon.com/System-Design-Interview-Insiders-Guide/dp/1736049119) Chapter 8: Design a URL shortener, by [Alex Xu](https://www.linkedin.com/in/alexxubyte/), [Sahn Lam](https://www.linkedin.com/in/sahnlam/)
    
